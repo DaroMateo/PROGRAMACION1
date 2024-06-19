@@ -1,0 +1,28 @@
+{
+    "heroes": [
+        {
+            "nombre": "Colossus",
+            "identidad": "Piotr Nikolaievitch Rasputin",
+            "empresa": "Marvel Comics",
+            "altura": 226.13,
+            "peso": 225.52,
+            "genero": "NB",
+            "color_ojos": "Silver",
+            "color_pelo": "Black",
+            "fuerza": 85,
+            "inteligencia": "good"
+        },
+        {
+            "nombre": "Hawkeye",
+            "identidad": "Clint Barton",
+            "empresa": "Marvel Comics",
+            "altura": 191.01,
+            "peso": 104.93,
+            "genero": "NB",
+            "color_ojos": "Blue",
+            "color_pelo": "Blond",
+            "fuerza": 15,
+            "inteligencia": "average"
+        }
+    ]
+}
