@@ -27,7 +27,7 @@ font1 = pygame.font.SysFont("Arial Narrow", 110)
 text = font.render("Puntaje: ", True, (0, 0, 0))
 
 
-with open("ahorcado.json", "r") as archivo:
+with open("datos.json", "r") as archivo:
     ahorcado = json.load(archivo)["ahorcado"]
 
 lista_palabras_usadas = []
@@ -59,6 +59,28 @@ def slot_palabra(palabra:str):
 
     return retorno
 
+def verificar_letra_en_palabra(palabra, ingreso ,palabra_secreta):
+    bandera_cambio = False
+
+    lista_palabra_secreta = []
+
+    for letra in palabra_secreta:
+        lista_palabra_secreta.append(letra)
+
+    if len(ingreso) == 1:
+        for i in range(len(palabra)):
+            if palabra[i] == ingreso:
+                lista_palabra_secreta[i] = ingreso
+                bandera_cambio = True
+
+    palabra_final = ""
+    for letra in lista_palabra_secreta:
+        palabra_final += letra
+
+    print(palabra_final)
+
+    return palabra_final if bandera_cambio == True else False
+
 
 linea = pygame.draw.line(window, (0,0,0), (300,100), (300, 200), 10)
 #window.blit(linea)
@@ -76,6 +98,7 @@ palabra_secreta = ""
 bandera_nombre = True
 
 posicion = (130, 12)
+contador_errores = 0
 
 while running:
     window.fill((255,255,255))
@@ -94,16 +117,30 @@ while running:
             if event.pos[0] >= (250) and event.pos[0] <= 309 and event.pos[1] >= (250) and event.pos[1] <= 309:
                 palabra = obtener_palabra_random(ahorcado, "ES")
                 palabra_secreta = slot_palabra(palabra)
-                print(palabra)
+                
 
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+        if event.type == pygame.KEYDOWN and (event.key == pygame.K_RETURN or event.key == pygame.KSCAN_RETURN):
             if bandera_nombre == True:
                 nombre = textinput.value
-                textinput.value = ""
                 posicion = (130,200)
                 bandera_nombre = False
             else:
-                palabra_secreta = textinput.value
+                validacion = verificar_letra_en_palabra(palabra, textinput.value,palabra_secreta)
+                if validacion != False:
+                    palabra_secreta = validacion
+                else:
+                    contador_errores += 1
+                if validacion == palabra:
+                    puntaje += len(palabra)
+                    palabra = obtener_palabra_random(ahorcado, "ES")
+                    palabra_secreta = slot_palabra(palabra)
+                    contador_errores = 0
+                if contador_errores == 6:
+                    palabra = obtener_palabra_random(ahorcado, "ES")
+                    palabra_secreta = slot_palabra(palabra)
+                    contador_errores = 0
+            textinput.value = ""
+
         if event.type == pygame.QUIT:
             running = False
 
@@ -114,9 +151,11 @@ while running:
 
     pygame.draw.rect(window, (238, 130, 238), (250, 250, 60, 60))
     text = font.render(f"Puntaje: {puntaje}", True, (0, 0, 0))
+    text3 = font.render(f"Errores: {contador_errores}", True, (0, 0, 0))
     text1 = font1.render(f"{palabra_secreta}", True, (0, 0, 0))
     text2 = font.render(f"Nombre: {nombre}", True, (0, 0, 0))
     window.blit(text,(600,10))
+    window.blit(text3,(600,500))
     window.blit(text1,(100,400))
     window.blit(text2,(10,10))
 
@@ -125,7 +164,4 @@ while running:
     pygame.display.flip()
 
 
-                    
-                        
-        
-                        
+                      
