@@ -61,7 +61,7 @@ TITLE_POS = (WIDTH / 2, 50)
 WORD_POS = (WIDTH / 2, 150)
 ATTEMPTS_POS = (WIDTH / 2, 200)
 POINTS_POS = (WIDTH / 2, 250)
-HANGMAN_POS = (400, 200)
+HANGMAN_POS = (400, 400)
 BUTTON_WIDTH, BUTTON_HEIGHT = 200, 50
 BUTTON_START_Y = HEIGHT / 2 - 100
 BUTTON_SPACING = 70
@@ -95,8 +95,9 @@ def draw_hangman(attempts):
 
 # Language selection function
 def select_language():
-    global language
     selecting = True
+    language = None
+
     while selecting:
         screen.fill(WHITE)
         draw_text(screen, translate("Select Language / Seleccione Idioma"), 48, WIDTH / 2, 100)
@@ -114,6 +115,8 @@ def select_language():
                 elif event.key == pygame.K_s:
                     language = 'ES'
                     selecting = False
+
+    return language
 
 # Function to translate text based on selected language
 def translate(key):
@@ -203,7 +206,7 @@ def draw_button(text, x, y, width, height, inactive_color, active_color, action=
     else:
         pygame.draw.rect(screen, inactive_color, (x, y, width, height))
 
-    draw_text(screen, text, 36, x + width / 2, y + height / 2)
+    draw_text(screen, text, 36, x + (width / 2), y + (height / 2) - 18)
 
 # Save scores to a file
 def save_scores(scores):
@@ -224,7 +227,7 @@ def show_ranking():
     scores = load_scores()
     scores = sorted(scores, key=lambda x: x['points'], reverse=True)[:5]  # Top 5 scores
 
-    screen.fill(WHITE)
+    screen.blit(background_image, (0, 0))
 
     draw_text(screen, translate("High Scores"), 48, WIDTH / 2, 20)
     y_offset = 150
@@ -358,3 +361,5 @@ def toggle_sound():
 select_language()
 input_nickname()
 main_menu()
+
+#traducido no se puede mutear

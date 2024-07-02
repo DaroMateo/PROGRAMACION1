@@ -213,23 +213,23 @@ def listar_pasajeros(lista):
         print(f"Fecha: {pasajero["Fecha"]} | Aerolínea: {pasajero["Aerolinea"]} | Clase: {pasajero["Clase"]} | Origen: {pasajero["Origen"]} | Destino: {pasajero["Destino"]} | Precio: {pasajero["Precio"]} | DNI: {pasajero["DNI_Pasajero"]} | NOmbre y Apellido: {pasajero["Apellido_Nombre_Pasajero"]}\n------------------------------------------------------------------------------------------------------------------------------------------")
 
 
-"""Hacer un submenú que realice lo siguiente:
-1) Listar por pantalla los pasajes de menor y mayor precio.
-2) Calcular y mostrar la cantidad de pasajes de un destino determinado, el mismo será ingresado por el
-usuario por consola.
-3) Listar los pasajes ordenados por Fecha. Preguntar al usuario si lo quiere ordenar de manera ascendente
-(‘asc’) o descendente ('desc'). Este ítem debe ser realizado por el algoritmo de ordenamiento bubble
-sort (burbujeo).
-4) Exportar a JSON la lista de pasajes, de acuerdo a la opción F 3.
-5) Exportar a CSV la lista de pasajes, de acuerdo a la opción F 1."""
+"""
+F – Hacer un submenú que realice lo siguiente:
+1-Listar por pantalla los pasajes de menor y mayor precio.
+2-Calcular y mostrar la cantidad de pasajes de un destino determinado, el mismo será ingresado por el usuario por consola.
+3-Listar los pasajes ordenados por Fecha. Preguntar al usuario si lo quiere ordenar de manera ascendente (‘asc’) o descendente (‘desc’). Este ítem debe ser realizado por el algoritmo de ordenamiento bubble sort (burbujeo).
+4-Exportar a JSON la lista de pasajes, de acuerdo a la opción F 3.
+5-Exportar a CSV la lista de pasajes, de acuerdo a la opción F 1.
+"""
 
-#pasajeros = leer_json("data.json","pasajeros")
-
+#1-Listar por pantalla los pasajes de menor y mayor precio.
+    
 def castear_precios(lista):
     for pasajero in lista:
         precio_casteado = pasajero["Precio"]
         precio_casteado = float(precio_casteado)
         pasajero["Precio"] = precio_casteado
+
 
 def precio_min(lista:list):
     castear_precios(lista)
@@ -248,7 +248,7 @@ def precio_min(lista:list):
     return minimo
 
 
-
+#pasajeros = leer_json("Simulacro\data.json", "pasajeros")
 
 
 def precio_max(lista:list):
@@ -265,7 +265,6 @@ def precio_max(lista:list):
             maximo = pasajero["Precio"]
 
     return maximo
-
 
 def retornar_max_min(lista):
     maximo = precio_max(lista)
@@ -284,6 +283,8 @@ def retornar_max_min(lista):
     
     print(mensaje)
 
+
+#2-Calcular y mostrar la cantidad de pasajes de un destino determinado, el mismo será ingresado por el usuario por consola.
 
 def cantidad_pasajes(lista):
     destino = input("Buenos Aires | Madrid | París | Miami | Roma | Tokio\n\nIngrese el destino a calcular: ")
@@ -304,6 +305,8 @@ def cantidad_pasajes(lista):
     
     print(f"\nLa cantidad de pasajes encontrados hacia {destino} es: {contador_destino} pasajes.\n")
 
+
+#3-Listar los pasajes ordenados por Fecha. Preguntar al usuario si lo quiere ordenar de manera ascendente (‘asc’) o descendente (‘desc’). Este ítem debe ser realizado por el algoritmo de ordenamiento bubble sort (burbujeo).
 
 def castear_fechas(lista):
     for pasajero in lista:

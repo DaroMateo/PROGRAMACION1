@@ -1,6 +1,6 @@
 from os import system
 import json
-from funciones_bienhecho import *
+from PROGRAMACION1.PLUS.funciones_bienhecho import *
 
 """
 Apellido y nombre: Magas, Juan Manuel

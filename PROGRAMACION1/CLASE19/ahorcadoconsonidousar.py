@@ -13,6 +13,8 @@ BLACK = (0, 0, 0)
 FONT_NAME = pygame.font.match_font('arial')
 SCORE_FILE = "scores.json"
 WORDS_FILE = "words.json"
+WORD_DISCOVERED_SOUND = pygame.mixer.Sound("coin_mario.mp3")
+GAME_OVER_SOUND = pygame.mixer.Sound("game_over.mp3")
 
 # Screen setup
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -50,7 +52,7 @@ icon_size = 50
 icon_pos = (WIDTH - icon_size - 10, 10)  # Top-right corner
 
 # Load background image
-background_image = pygame.image.load('fondo.png').convert()
+background_image = pygame.image.load('fondo1.jpg').convert()
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
 # Fonts
@@ -61,7 +63,7 @@ TITLE_POS = (WIDTH / 2, 50)
 WORD_POS = (WIDTH / 2, 150)
 ATTEMPTS_POS = (WIDTH / 2, 200)
 POINTS_POS = (WIDTH / 2, 250)
-HANGMAN_POS = (400, 200)
+HANGMAN_POS = (400, 400)
 BUTTON_WIDTH, BUTTON_HEIGHT = 200, 50
 BUTTON_START_Y = HEIGHT / 2 - 100
 BUTTON_SPACING = 70
@@ -69,7 +71,7 @@ BUTTON_SPACING = 70
 # Drawing functions
 def draw_text(surf, text, size, x, y, align="center"):
     font = pygame.font.Font(FONT_NAME, size)
-    text_surface = font.render(text, True, BLACK)
+    text_surface = font.render(text, True, WHITE)
     text_rect = text_surface.get_rect()
     if align == "center":
         text_rect.midtop = (x, y)
@@ -81,17 +83,17 @@ def draw_text(surf, text, size, x, y, align="center"):
 
 def draw_hangman(attempts):
     if attempts <= 5:
-        pygame.draw.circle(screen, BLACK, HANGMAN_POS, 30, 3)  # Head
+        pygame.draw.circle(screen, WHITE, HANGMAN_POS, 30, 3)  # Head
     if attempts <= 4:
-        pygame.draw.rect(screen, BLACK, (HANGMAN_POS[0] - 15, HANGMAN_POS[1] + 30, 30, 60), 3)  # Torso
+        pygame.draw.rect(screen, WHITE, (HANGMAN_POS[0] - 15, HANGMAN_POS[1] + 30, 30, 60), 3)  # Torso
     if attempts <= 3:
-        pygame.draw.line(screen, BLACK, (HANGMAN_POS[0], HANGMAN_POS[1] + 30), (HANGMAN_POS[0] - 50, HANGMAN_POS[1] + 80), 3)  # Left Arm
+        pygame.draw.line(screen, WHITE, (HANGMAN_POS[0], HANGMAN_POS[1] + 30), (HANGMAN_POS[0] - 50, HANGMAN_POS[1] + 80), 3)  # Left Arm
     if attempts <= 2:
-        pygame.draw.line(screen, BLACK, (HANGMAN_POS[0], HANGMAN_POS[1] + 30), (HANGMAN_POS[0] + 50, HANGMAN_POS[1] + 80), 3)  # Right Arm
+        pygame.draw.line(screen, WHITE, (HANGMAN_POS[0], HANGMAN_POS[1] + 30), (HANGMAN_POS[0] + 50, HANGMAN_POS[1] + 80), 3)  # Right Arm
     if attempts <= 1:
-        pygame.draw.line(screen, BLACK, (HANGMAN_POS[0], HANGMAN_POS[1] + 90), (HANGMAN_POS[0] - 50, HANGMAN_POS[1] + 150), 3)  # Left Leg
+        pygame.draw.line(screen, WHITE, (HANGMAN_POS[0], HANGMAN_POS[1] + 90), (HANGMAN_POS[0] - 50, HANGMAN_POS[1] + 150), 3)  # Left Leg
     if attempts <= 0:
-        pygame.draw.line(screen, BLACK, (HANGMAN_POS[0], HANGMAN_POS[1] + 90), (HANGMAN_POS[0] + 50, HANGMAN_POS[1] + 150), 3)  # Right Leg
+        pygame.draw.line(screen, WHITE, (HANGMAN_POS[0], HANGMAN_POS[1] + 90), (HANGMAN_POS[0] + 50, HANGMAN_POS[1] + 150), 3)  # Right Leg
 
 # Language selection function
 def select_language():
@@ -132,14 +134,14 @@ def translate(key):
         }
     elif language == 'ES':
         translations = {
-            "Seleccione Idioma / Select Language": "Seleccione Idioma / Select Language",
-            "Presione 'E' para inglés o 'S' para español": "Press 'E' for English or 'S' for Spanish",
-            "Ingrese Apodo:": "Ingrese Apodo:",
+            "Select Language / Seleccione Idioma": "Seleccione Idioma / Select Language",
+            "Press 'E' for English or 'S' for Spanish": "Presione 'E' para inglés o 'S' para español",
+            "Enter Nickname:": "Ingrese Apodo:",
             "Palabra:": "Palabra:",
-            "Intentos Restantes:": "Intentos Restantes:",
-            "Puntos:": "Puntos:",
-            "Juego del Ahorcado": "Juego del Ahorcado",
-            "Jugar": "Jugar",
+            "Attempts Left:": "Intentos Restantes:",
+            "Points:": "Puntos:",
+            "Hangman Game": "Juego del Ahorcado",
+            "Play": "Jugar",
             "Salir": "Salir",
             "Puntaje": "Puntaje"
         }
@@ -151,6 +153,8 @@ def translate(key):
 # Nickname input function
 def input_nickname():
     global nickname, input_active
+    if nickname:
+        return  # If nickname is already set, skip input
     input_active = True
     input_box = pygame.Rect(WIDTH / 2 - 100, HEIGHT / 2 - 25, 200, 50)
     color_inactive = pygame.Color('lightskyblue3')
@@ -206,45 +210,59 @@ def draw_button(text, x, y, width, height, inactive_color, active_color, action=
     draw_text(screen, text, 36, x + (width / 2), y + (height / 2) - 18)
 
 # Save scores function
+
 def save_scores(new_score):
     try:
         with open(SCORE_FILE, 'r') as file:
             data = json.load(file)
-            data["scores"].append(new_score)
-    except (FileNotFoundError, KeyError):
-        data = {"scores": [new_score]}
+    except FileNotFoundError:
+        data = {"scores": []}  # Si el archivo no existe, inicializar con una lista vacía de puntajes
+
+    data["scores"].append(new_score)  # Agregar el nuevo puntaje a la lista de puntajes
 
     with open(SCORE_FILE, 'w') as file:
-        json.dump(data, file, indent=4)
+        json.dump(data, file, indent=4)  # Guardar los datos actualizados en el archivo JSON
 
-# Load scores function
 def load_scores():
-    try:
-        with open(SCORE_FILE, 'r') as file:
-            scores = json.load(file)["scores"]
-    except (FileNotFoundError, KeyError):
-        scores = []
-    return scores
+    with open(SCORE_FILE, 'r') as file:
+        content = file.read()
+        if content:
+            data = json.loads(content)
+            return data.get("scores", [])
+    return []
 
 # Show ranking function
 def show_ranking():
     scores = load_scores()
     scores = sorted(scores, key=lambda x: x['points'], reverse=True)[:5]  # Top 5 scores
-    screen.fill(WHITE)
-    draw_text(screen, "Top 5 Scores", 48, WIDTH / 2, 50)
+
+    screen.blit(background_image, (0, 0))
+
+    draw_text(screen, translate("High Scores"), 48, WIDTH / 2, 20)
     y_offset = 150
     for score in scores:
         draw_text(screen, f"{score['nickname']}: {score['points']}", 36, WIDTH / 2, y_offset)
         y_offset += 50
+
+    draw_button(translate("Back"), 50, 50, 120, 50, (50, 50, 255), (100, 100, 255), main_menu)
+
     pygame.display.flip()
-    pygame.time.wait(3000)  # Wait 3 seconds before returning to the main menu
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()  # Salir del programa cuando se cierra la ventana
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if 50 < mouse_pos[0] < 170 and 50 < mouse_pos[1] < 100:
+                    main_menu()  # Vuelve al menú principal si se hace clic en "Back"
 
 # Start game function
 def start_game():
-    global language, nickname, words_copy, points
+    global language, words_copy, points
 
     select_language()
-    input_nickname()
 
     # Reset game variables
     words_copy = WORDS.copy()
@@ -261,12 +279,12 @@ def main_menu():
     running = True
     while running:
         screen.blit(background_image, (0, 0))  # Draw background image
-        draw_text(screen, translate("Hangman Game/Ahorcado"), 48, *TITLE_POS)
+        draw_text(screen, translate("Hangman Game"), 48, TITLE_POS[0], TITLE_POS[1])
 
         # Draw buttons
-        draw_button(translate("Jugar"), WIDTH / 2 - BUTTON_WIDTH / 2, BUTTON_START_Y, BUTTON_WIDTH, BUTTON_HEIGHT, WHITE, (200, 200, 200), start_game)
-        draw_button(translate("Puntaje"), WIDTH / 2 - BUTTON_WIDTH / 2, BUTTON_START_Y + BUTTON_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT, WHITE, (200, 200, 200), show_ranking)
-        draw_button(translate("Salir"), WIDTH / 2 - BUTTON_WIDTH / 2, BUTTON_START_Y + 2 * BUTTON_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT, WHITE, (200, 200, 200), pygame.quit)
+        draw_button(translate("Jugar"), WIDTH / 2 - BUTTON_WIDTH / 2, BUTTON_START_Y, BUTTON_WIDTH, BUTTON_HEIGHT, BLACK, (200, 200, 200), start_game)
+        draw_button(translate("Puntaje"), WIDTH / 2 - BUTTON_WIDTH / 2, BUTTON_START_Y + BUTTON_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT, BLACK, (200, 200, 200), show_ranking)
+        draw_button(translate("Salir"), WIDTH / 2 - BUTTON_WIDTH / 2, BUTTON_START_Y + 2 * BUTTON_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT, BLACK, (200, 200, 200), pygame.quit)
 
         # Draw sound icon
         if mute:
@@ -323,6 +341,10 @@ def main_game():
 
         if attempts == 0 or '_' not in guessed:
             game_over = True
+            if "_" not in guessed:
+                WORD_DISCOVERED_SOUND.play()  # Reproducir sonido al descubrir una letra
+            else:
+                GAME_OVER_SOUND.play()  
 
         # Draw elements
         draw_text(screen, "Hangman Game", 48, *TITLE_POS)
@@ -335,6 +357,18 @@ def main_game():
             pygame.time.wait(1000)
             main_game()
 
+        if mute:
+            screen.blit(pygame.transform.scale(sound_off_icon, (icon_size, icon_size)), icon_pos)
+        else:
+            screen.blit(pygame.transform.scale(sound_on_icon, (icon_size, icon_size)), icon_pos)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()  # Exit the program when user closes the window
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if icon_pos[0] < event.pos[0] < icon_pos[0] + icon_size and icon_pos[1] < event.pos[1] < icon_pos[1] + icon_size:
+                    toggle_sound()  # Toggle sound when icon is clicked
         pygame.display.flip()
 
     pygame.quit()
@@ -352,3 +386,5 @@ def toggle_sound():
 select_language()
 input_nickname()
 main_menu()
+
+# anda con sonido en menu pero en el juego no se puede  mutear, se traduce al idioma seleccionado
