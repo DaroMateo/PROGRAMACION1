@@ -180,7 +180,7 @@ def traducir(clave):
             "Seleccione Idioma": "Seleccione Idioma",
             "Presione 'E' para inglés o 'S' para español": "Presione 'E' para inglés o 'S' para español",
             "Ingrese Apodo:": "Ingrese Apodo:",
-            "Word:": "Palabra:",
+            "Palabra:": "Palabra:",
             "Attempts Left:": "Intentos Restantes:",
             "Points:": "Puntos:",
             "Hangman Game": "Juego del Ahorcado",
@@ -427,7 +427,7 @@ def juego_principal():
     y dibujar los elementos del juego en la pantalla.
     Gestiona la puntuación final, guarda la puntuación y sale del juego cuando es necesario.
     """
-    global palabra_seleccionada, adivinadas, intentos, puntos, fin_juego, copiar_palabras, silencio #se usa dentro de una función para referirse a una variable que está definida fuera de la función, es decir, en el ámbito global del módulo. Esto permite modificar la variable global desde dentro de la función.
+    global palabra_seleccionada, adivinadas, intentos, puntos, fin_juego, copiar_palabras  #se usa dentro de una función para referirse a una variable que está definida fuera de la función, es decir, en el ámbito global del módulo. Esto permite modificar la variable global desde dentro de la función.
 
     if not copiar_palabras:
         dibujar_texto(pantalla, f"Puntaje Final para {apodo}: {puntos}", 48, ANCHO / 2, ALTO / 2)
