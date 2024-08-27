@@ -1,8 +1,68 @@
 {
     "puntajes": [
         {
-            "apodo": "dar",
-            "puntos": 98
+            "apodo": "Daro",
+            "puntos": 91
+        },
+        {
+            "apodo": "Daniels",
+            "puntos": 91
+        },
+        {
+            "apodo": "Nestor",
+            "puntos": 28
+        },
+        {
+            "apodo": "JAMES",
+            "puntos": 22
+        },
+        {
+            "apodo": "daromateo",
+            "puntos": 18
+        },
+        {
+            "apodo": "ALbert",
+            "puntos": 16
+        },
+        {
+            "apodo": "eduardo",
+            "puntos": 14
+        },
+        {
+            "apodo": "kevin",
+            "puntos": 14
+        },
+        {
+            "apodo": "DARIOO",
+            "puntos": 11
+        },
+        {
+            "apodo": "mateo",
+            "puntos": 9
+        },
+        {
+            "apodo": "daro\\",
+            "puntos": 5
+        },
+        {
+            "apodo": "daroo",
+            "puntos": 4
+        },
+        {
+            "apodo": "ezequiel",
+            "puntos": 2
+        },
+        {
+            "apodo": "damian",
+            "puntos": 2
+        },
+        {
+            "apodo": "cristian",
+            "puntos": 0
+        },
+        {
+            "apodo": "mack",
+            "puntos": 0
         }
     ]
 }

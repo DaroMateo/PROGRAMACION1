@@ -11,7 +11,7 @@ ANCHO = 800
 ALTO = 600
 BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
-NOMBRE_FUENTE = pygame.font.match_font('arial')
+NOMBRE_FUENTE = pygame.font.match_font("Arial Narrow")
 ARCHIVO_PUNTAJES = "puntajes.json"
 ARCHIVO_PALABRAS = "palabras.json"
 SONIDO_PALABRA_DESCUBIERTA = pygame.mixer.Sound("coin_mario.mp3")
@@ -23,7 +23,7 @@ pygame.display.set_caption('Ahorcado')
 
 # Cargar palabras
 def leer_archivo(archivo):
-    with open(archivo, 'r') as archivo:
+    with open(archivo, 'r') as archivo: # abrimos el archivo en modo lectura
         ahorcado = json.load(archivo)["ahorcado"]
     return ahorcado
 
@@ -44,7 +44,7 @@ silencio = False  # Bandera de silencio para sonidos
 # Cargar y configurar sonidos
 pygame.mixer.music.set_volume(0.7)
 sonido_fondo = pygame.mixer.Sound("ringtones-got-theme.mp3")
-sonido_fondo.set_volume(0.2)
+sonido_fondo.set_volume(0.2) # Configurar volumen set_volume es la cantidad de sonido que se reproduce, 0.2 es el porcentaje de volumen que se reproduce
 
 # Cargar iconos
 icono_sonido_encendido = pygame.image.load('unmute.png')
@@ -57,20 +57,20 @@ imagen_fondo = pygame.image.load('fondo1.jpg').convert()
 imagen_fondo = pygame.transform.scale(imagen_fondo, (ANCHO, ALTO))
 
 # Fuentes
-fuente = pygame.font.Font(NOMBRE_FUENTE, 36)
+fuente = pygame.font.Font(NOMBRE_FUENTE, 36)  # Tamaño de la fuente de texto (36 pixeles) 
 
 # Constantes de posición
-POSICION_TITULO = (ANCHO / 2, 50)
-POSICION_PALABRA = (ANCHO / 2, 150)
-POSICION_INTENTOS = (ANCHO / 2, 200)
-POSICION_PUNTOS = (ANCHO / 2, 250)
-POSICION_AHORCADO = (400, 400)
-ANCHO_BOTON, ALTO_BOTON = 200, 50
-INICIO_BOTON_Y = ALTO / 2 - 100
-ESPACIADO_BOTON = 70
+POSICION_TITULO = (ANCHO / 2, 50) # Centrar el texto en la pantalla, 2 ,50 son las coordenadas
+POSICION_PALABRA = (ANCHO / 2, 150) # Centrar el texto en la pantalla, 2, 150 son las coordenadas
+POSICION_INTENTOS = (ANCHO / 2, 200) # Centrar el texto en la pantalla, 2, 200 son las coordenadas
+POSICION_PUNTOS = (ANCHO / 2, 250) # Centrar el texto en la pantalla, 2, 250 son las coordenadas
+POSICION_AHORCADO = (400, 400) # Centrar el texto en la pantalla, 400, 400 son las coordenadas
+ANCHO_BOTON, ALTO_BOTON = 200, 50 # Tamaño de los botones
+INICIO_BOTON_Y = ALTO / 2 - 100 # Posición inicial de los botones
+ESPACIADO_BOTON = 70 # Espaciado entre botones
 
 # Funciones de dibujo
-def dibujar_texto(surf, texto, tamano, x, y, alineacion="center"):
+def dibujar_texto(surf, texto, tamano, x, y, alineacion="center"): 
     """
         Una función que representa texto en una superficie en una posición y alineación específicas.
 
@@ -85,16 +85,16 @@ def dibujar_texto(surf, texto, tamano, x, y, alineacion="center"):
         Returns:
             None
     """
-    fuente = pygame.font.Font(NOMBRE_FUENTE, tamano)
-    superficie_texto = fuente.render(texto, True, BLANCO)
-    rectangulo_texto = superficie_texto.get_rect()
-    if alineacion == "center":
-        rectangulo_texto.midtop = (x, y)
-    elif alineacion == "left":
-        rectangulo_texto.topleft = (x, y)
-    elif alineacion == "right":
+    fuente = pygame.font.Font(NOMBRE_FUENTE, tamano) # Cargar fuente de texto en la superficie en el tamanio indicado 
+    superficie_texto = fuente.render(texto, True, BLANCO) # Rerpesenta el texto en la superficie
+    rectangulo_texto = superficie_texto.get_rect() # Crea un rectángulo que cubre el texto
+    if alineacion == "center": # Si la alineación es "centro" 
+        rectangulo_texto.midtop = (x, y) # El rectángulo se centra en la superficie, .midtop representa el punto medio superior del rectángulo 
+    elif alineacion == "left": # Si la alineación es "izquierda"
+        rectangulo_texto.topleft = (x, y) 
+    elif alineacion == "right": # Si la alineación es "derecha"
         rectangulo_texto.topright = (x, y)
-    surf.blit(superficie_texto, rectangulo_texto)
+    surf.blit(superficie_texto, rectangulo_texto) # Rellena el rectángulo con el texto
 
 def dibujar_ahorcado(intentos):
     """
@@ -106,10 +106,11 @@ def dibujar_ahorcado(intentos):
     Returns:
         None
     """
+    #
     if intentos <= 5:
-        pygame.draw.circle(pantalla, BLANCO, POSICION_AHORCADO, 30, 3)  # Cabeza
+        pygame.draw.circle(pantalla, BLANCO, POSICION_AHORCADO, 30, 3)  # Cabeza , POSICION_AHORCADO es una tupla que contiene la posición de un elemento gráfico (como el muñeco del ahorcado, tupla es una lista de elementos,  permite almacenar múltiples elementos en una sola variable
     if intentos <= 4:
-        pygame.draw.rect(pantalla, BLANCO, (POSICION_AHORCADO[0] - 15, POSICION_AHORCADO[1] + 30, 30, 60), 3)  # Torso
+        pygame.draw.rect(pantalla, BLANCO, (POSICION_AHORCADO[0] - 15, POSICION_AHORCADO[1] + 30, 30, 60), 3)  # Torso POSICION_AHORCADO[0] - 15, POSICION_AHORCADO[1] + 30, 30, 60 es POSICION_AHORCADO[0] - 15: Esto toma la coordenada X de POSICION_AHORCADO y le resta 15 unidades, desplazando el rectángulo 15 unidades a la izquierda. POSICION_AHORCADO[1] + 30: Esto toma la coordenada Y de POSICION_AHORCADO y le suma 30 unidades, desplazando el rectángulo 30 unidades hacia abajo. 30, 60 es la anchura y la altura del rectángulo.
     if intentos <= 3:
         pygame.draw.line(pantalla, BLANCO, (POSICION_AHORCADO[0], POSICION_AHORCADO[1] + 30), (POSICION_AHORCADO[0] - 50, POSICION_AHORCADO[1] + 80), 3)  # Brazo Izquierdo
     if intentos <= 2:
@@ -131,9 +132,9 @@ def seleccionar_idioma():
     Returns:
         None
     """
-    global idioma #se usa dentro de una función para referirse a una variable que está definida fuera de la función, es decir, en el ámbito global del módulo. Esto permite modificar la variable global desde dentro de la función.
+    global idioma #que use la variable que está fuera de la función en lugar de crear una nueva dentro de la función.
     seleccionando = True
-    while seleccionando:
+    while seleccionando: # Mientras la variable 'seleccionando' sea verdadera se ejecuta el bucle infinito. Cada vez que el bucle se repite es porque el usuario ha seleccionado el idioma deseado. 
         pantalla.blit(imagen_fondo, (0, 0))  # Dibujar imagen de fondo
         dibujar_texto(pantalla, "Seleccione Idioma", 48, ANCHO / 2, 100)
         dibujar_texto(pantalla, "Presione 'E' para inglés o 'S' para español", 36, ANCHO / 2, 200)
@@ -144,10 +145,10 @@ def seleccionar_idioma():
                 pygame.quit()
                 sys.exit()  # Salir del programa cuando se cierra la ventana
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:
+                if event.key == pygame.K_e: # Si el usuario presiona la tecla 'E' selecciona ingleés 
                     idioma = 'EN'
                     seleccionando = False
-                elif event.key == pygame.K_s:
+                elif event.key == pygame.K_s: # Si el usuario presiona la tecla 'S' selecciona Español
                     idioma = 'ES'
                     seleccionando = False
 
@@ -173,7 +174,10 @@ def traducir(clave):
             "Juego del Ahorcado": "Hangman Game",
             "Jugar": "Play",
             "Salir": "Quit",
-            "Puntaje": "Scores"
+            "Puntaje": "Scores",
+            "Atras": "Back",
+            "Puntajes Más Altos" : "Highest Scores"
+
         }
     elif idioma == 'ES':
         traducciones = {
@@ -186,7 +190,9 @@ def traducir(clave):
             "Hangman Game": "Juego del Ahorcado",
             "Play": "Jugar",
             "Quit": "Salir",
-            "Scores": "Puntaje"
+            "Scores": "Puntaje",
+            "Back": "Atras",
+            "Highest Scores" : "Puntajes Más Altos"
         }
     else:
         return clave  # Devolver la clave si el idioma no está soportado
@@ -214,7 +220,7 @@ def entrada_apodo():
 
     No hay valor de retorno.
     """
-    global apodo, entrada_activa #se usa dentro de una función para referirse a una variable que está definida fuera de la función, es decir, en el ámbito global del módulo. Esto permite modificar la variable global desde dentro de la función.
+    global apodo, entrada_activa #que use la variable que está fuera de la función en lugar de crear una nueva dentro de la función.
     if apodo:
         return  # Si el apodo ya está configurado, saltar la entrada
 
@@ -227,14 +233,14 @@ def entrada_apodo():
     texto = ''
     hecho = False
 
-    while not hecho:
+    while not hecho:  # Mientras no se haya completado la entrada del apodo por completo (que el usuario presione Enter)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()  # Salir del programa cuando se cierra la ventana
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if caja_entrada.collidepoint(event.pos):
-                    activo = not activo
+            if event.type == pygame.MOUSEBUTTONDOWN: # Si el usuario hace clic en la caja de entrada
+                if caja_entrada.collidepoint(event.pos):   # Si el usuario hace clic dentro de la caja de entrada, .collidepoint(event.pos) devuelve True o False dependiendo de si el usuario hace clic en la caja de entrada o no.
+                    activo = not activo  # Activar o desactivar el estado de entrada (activado o desactivado) de la caja de entrada al hacer clic sobre ella
                 else:
                     activo = False
                 color = color_activo if activo else color_inactivo
@@ -276,42 +282,104 @@ def dibujar_boton(texto, x, y, ancho, alto, color_inactivo, color_activo, accion
     Returns:
     Esta función no devuelve ningún valor.
     """
-    raton = pygame.mouse.get_pos()
-    clic = pygame.mouse.get_pressed()
+    raton = pygame.mouse.get_pos() # Obtener la posición del ratón en la pantalla, .get_pos() devuelve una tupla (x, y)
+    clic = pygame.mouse.get_pressed() # Obtener el estado de clic del ratón (0, 0, 0) si no hay clic, (1, 0, 0) si hay clic, get_pressed() devuelve una tupla (x, y, botón)
 
-    if x < raton[0] < x + ancho and y < raton[1] < y + alto:
-        pygame.draw.rect(pantalla, color_activo, (x, y, ancho, alto))
-        if clic[0] == 1 and accion is not None:
+    if x < raton[0] < x + ancho and y < raton[1] < y + alto: # Determinar si el ratón está sobre el botón con las coordenadas dadas por x e y
+        pygame.draw.rect(pantalla, color_activo, (x, y, ancho, alto)) # Dibujar el botón con el color activo en las coordenadas dadas
+        if clic[0] == 1 and accion is not None: # Determinar si se ha hecho clic sobre el botón y si hay una función de acción dada
             accion()
     else:
         pygame.draw.rect(pantalla, color_inactivo, (x, y, ancho, alto))
 
     dibujar_texto(pantalla, texto, 36, x + (ancho / 2), y + (alto / 2) - 18)
-
 # Función para guardar puntajes
+def swap(lista: list, indice_uno: int, indice_dos: int) -> list:
+    """
+    Swapea los valores de dos índices de una lista.
+
+    Args:
+        lista (list): Lista que contiene los valores a intercambiar.
+        indice_uno (int): Índice del valor a intercambiar.
+        indice_dos (int): Índice del segundo valor a intercambiar.
+
+    Returns:
+        list: Retorna la lista con los valores intercambiados.
+    """
+    auxiliar = lista[indice_uno]
+    lista[indice_uno] = lista[indice_dos]
+    lista[indice_dos] = auxiliar
+
+    return lista  
+
+
+def ordenar(lista: list, clave: str, ascendente: bool = True) -> list: 
+    """
+    Ordena una lista de diccionarios en base a una clave de forma ascendente o descendente.
+
+    Args:
+        lista (list): Lista de diccionarios a ordenar.
+        clave (str): Clave a usar para ordenar la lista.
+        ascendente (bool, opcional): Declara si la lista se ordena de forma ascendente o descendente. 
+                                     Se le asigna False para ordenar de forma descendente. 
+                                     (Si no se pasa ningún valor booleano, ordena de forma ascendente por defecto.)
+
+    Returns:
+        list: Retorna la lista de diccionarios ordenada.
+    """
+    for i in range(len(lista) - 1):
+        for j in range(i + 1, len(lista)):
+            if ascendente and int(lista[i][clave]) > int(lista[j][clave]) or not ascendente and int(lista[i][clave]) < int(lista[j][clave]):
+                swap(lista, i, j)
+    return lista
+
+def generar_json(nombre: str, lista: list, clave: str):
+    """
+    Genera un archivo JSON con la lista proporcionada bajo la clave dada.
+
+    Args:
+        nombre (str): El nombre del archivo JSON a generar.
+        lista (list): La lista de datos a guardar en el archivo JSON.
+        clave (str): La clave bajo la cual se guardará la lista en el archivo JSON.
+    """
+    data = {clave: lista}
+    with open(nombre, 'w') as file:
+        json.dump(data, file, indent=4, ensure_ascii=False)
+
+def leer_archivo (archivo_nombre:str):
+    if len(archivo_nombre) == 0:
+        contenido = False  
+    else:          
+        with open(archivo_nombre, 'r') as archivo:
+            contenido = archivo.read()
+    return contenido
+
+
+    
 def guardar_puntajes(nuevo_puntaje):
     """
-    función para guardar una nueva partitura en un archivo. Si el archivo existe, carga los datos,
+    Función para guardar una nueva partitura en un archivo. Si el archivo existe, carga los datos,
     agrega la nueva puntuación y la guarda. Si el archivo no existe, se inicializa
     los datos con una lista vacía de puntuaciones y guarda la nueva puntuación.
+    
     Parameters:
         nuevo_puntaje: La nueva puntuación que se guardará.
+        
     Returns:
         Esta función no devuelve ningún valor.
     """
-    existe_archivo = True
-    carpeta = "PARCIAL2"
-    ruta_completa = carpeta + "/" + ARCHIVO_PUNTAJES
-    if existe_archivo(ruta_completa):
-        with open(ruta_completa, 'r') as archivo:
-            datos = json.lARCHIVO_PUNTAJESoad(archivo)
+    contenido = leer_archivo(ARCHIVO_PUNTAJES)
+    if contenido:
+        data = json.loads(contenido)
     else:
-        datos = {"puntajes": []}  # Si el archivo no existe, inicializar con una lista vacía de puntajes
+        data = {"puntajes": []}
 
-    datos["puntajes"].append(nuevo_puntaje)  # Agregar el nuevo puntaje a la lista de puntajes
+    data["puntajes"].append(nuevo_puntaje)
+    data["puntajes"] = ordenar(data["puntajes"], clave='puntos', ascendente=False)
 
-    with open(ARCHIVO_PUNTAJES, 'w') as archivo:
-        json.dump(datos, archivo, indent=4)  # Guardar los datos actualizados en el archivo JSON
+    generar_json(ARCHIVO_PUNTAJES, data["puntajes"], "puntajes")
+
+
 
 def cargar_puntajes():
     """
@@ -321,41 +389,41 @@ def cargar_puntajes():
         Una lista de diccionarios que representan las puntuaciones más altas, donde cada diccionario contiene las claves "apodo" y "puntos".
         Si el archivo no existe o está vacío, se devuelve una lista vacía.
     """
-    with open(ARCHIVO_PUNTAJES, 'r') as archivo:
-        contenido = archivo.read()
+    with open(ARCHIVO_PUNTAJES, 'r') as file:
+        contenido = file.read() # Lee el contenido del archivo JSON y lo almacena en la variable 'contenido'
         if contenido:
-            datos = json.loads(contenido)
-            return datos.get("puntajes", [])
+            data = json.loads(contenido)
+            return data.get("puntajes", [])
     return []
 
 # Función para mostrar ranking
-def mostrar_ranking():
+def mostrar_ranking(): 
     """
     Una función para mostrar la clasificación de los 5 mejores puntajes, incluida la visualización de apodos y puntos de los jugadores.
     """
 
-    puntajes = cargar_puntajes()
-    puntajes = sorted(puntajes, key=lambda x: x['puntos'], reverse=True)[:5]  # Top 5 puntajes
+    puntajes = cargar_puntajes()  # Cargar puntajes en orden descendente por puntos 
+    puntajes = ordenar(puntajes, clave='puntos', ascendente=False)[:5]  # Top 5 puntajes en orden ascendente
 
     pantalla.blit(imagen_fondo, (0, 0))
 
     dibujar_texto(pantalla, traducir("Puntajes Más Altos"), 48, ANCHO / 2, 20)
     desplazamiento_y = 150
-    for puntaje in puntajes:
-        dibujar_texto(pantalla, f"{puntaje['apodo']}: {puntaje['puntos']}", 36, ANCHO / 2, desplazamiento_y)
-        desplazamiento_y += 50
+    for puntaje in puntajes:   # Mostrar puntajes en orden descendente por puntos y apodos 
+        dibujar_texto(pantalla, f"{puntaje['apodo']}: {puntaje['puntos']}", 36, ANCHO / 2, desplazamiento_y) # Mostrar puntajes en orden descendente por puntos y apodos 
+        desplazamiento_y += 50 # +=50 para separar los apodos con los puntajes y mostrarlos en orden descendente por puntos y apodos
 
-    dibujar_boton(traducir("Salir"), 50, 50, 120, 50, (50, 50, 255), (100, 100, 255), menu_principal)
+    dibujar_boton(traducir("Atras"), 50, 50, 120, 50, (50, 50, 255), (100, 100, 255), menu_principal)
 
-    pygame.display.flip()
+    pygame.display.flip() #.flip actualiza la pantalla
 
-    while True:
+    while True:  # Mostrar puntajes en orden descendente por puntos y apodos
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()  # Salir del programa cuando se cierra la ventana
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                pos_raton = pygame.mouse.get_pos()
+            elif event.type == pygame.MOUSEBUTTONDOWN: # Mostrar puntajes en orden descendente por puntos y apodos
+                pos_raton = pygame.mouse.get_pos() # Mostrar puntajes en orden descendente por puntos y apodos, .get_pos devuelve una tupla (x, y) de la posición del ratón
                 if 50 < pos_raton[0] < 170 and 50 < pos_raton[1] < 100:
                     menu_principal()  # Volver al menú principal si se hace clic en "Salir"
 
@@ -366,12 +434,10 @@ def iniciar_juego():
 
     Esta función reinicia las variables del juego y llama a la función `juego_principal()`.
     """
-    global idioma, copiar_palabras, puntos #se usa dentro de una función para referirse a una variable que está definida fuera de la función, es decir, en el ámbito global del módulo. Esto permite modificar la variable global desde dentro de la función.
-
-    seleccionar_idioma()
+    global idioma, copiar_palabras, puntos #que use la variable que está fuera de la función en lugar de crear una nueva dentro de la función.
 
     # Reiniciar variables del juego
-    copiar_palabras = PALABRAS.copy()
+    copiar_palabras = PALABRAS.copy()  # Copia de la lista de palabras para el juego actual, .copy devuelve una copia de la lista    
     puntos = 0  # Reiniciar puntos para un nuevo juego
     juego_principal()
 
@@ -388,13 +454,13 @@ def menu_principal():
     Returns:
     None
     """
-    global idioma #se usa dentro de una función para referirse a una variable que está definida fuera de la función, es decir, en el ámbito global del módulo. Esto permite modificar la variable global desde dentro de la función.
+    global idioma #que use la variable que está fuera de la función en lugar de crear una nueva dentro de la función.
 
     # Reproducir música de fondo
     sonido_fondo.play(loops=-1)
 
     ejecutando = True
-    while ejecutando:
+    while ejecutando:  # Bucle principal del juego 
         pantalla.blit(imagen_fondo, (0, 0))  # Dibujar imagen de fondo
         dibujar_texto(pantalla, traducir("Juego del Ahorcado"), 48, POSICION_TITULO[0], POSICION_TITULO[1])
 
@@ -404,19 +470,19 @@ def menu_principal():
         dibujar_boton(traducir("Salir"), ANCHO / 2 - ANCHO_BOTON / 2, INICIO_BOTON_Y + 2 * ESPACIADO_BOTON, ANCHO_BOTON, ALTO_BOTON, NEGRO, (200, 200, 200), pygame.quit)
 
         # Dibujar ícono de sonido
-        if silencio:
+        if silencio:  # Si el sonido esta silenciado, mostrar el ícono de sonido apagado
             pantalla.blit(pygame.transform.scale(icono_sonido_apagado, (tamano_icono, tamano_icono)), posicion_icono)
-        else:
+        else:  # Si el sonido no esta silenciado, mostrar el ícono de sonido encendido
             pantalla.blit(pygame.transform.scale(icono_sonido_encendido, (tamano_icono, tamano_icono)), posicion_icono)
 
         pygame.display.flip()
 
-        for event in pygame.event.get():
+        for event in pygame.event.get(): # Manejo de eventos del juego (Click, teclado, etc.)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()  # Salir del programa cuando se cierra la ventana
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if posicion_icono[0] < event.pos[0] < posicion_icono[0] + tamano_icono and posicion_icono[1] < event.pos[1] < posicion_icono[1] + tamano_icono:
+            elif event.type == pygame.MOUSEBUTTONDOWN: # Manejo de eventos de click del ratón (Click, teclado, etc.)
+                if posicion_icono[0] < event.pos[0] < posicion_icono[0] + tamano_icono and posicion_icono[1] < event.pos[1] < posicion_icono[1] + tamano_icono: # Verificar si el click se encuentra dentro del ícono de sonido (activado o desactivado) y cambiar el estado del silencio a su opuesto 
                     alternar_sonido()  # Alternar sonido cuando se hace clic en el ícono
 
 # Función principal del bucle de juego
@@ -427,52 +493,63 @@ def juego_principal():
     y dibujar los elementos del juego en la pantalla.
     Gestiona la puntuación final, guarda la puntuación y sale del juego cuando es necesario.
     """
-    global palabra_seleccionada, adivinadas, intentos, puntos, fin_juego, copiar_palabras  #se usa dentro de una función para referirse a una variable que está definida fuera de la función, es decir, en el ámbito global del módulo. Esto permite modificar la variable global desde dentro de la función.
+    global palabra_seleccionada, adivinadas, intentos, puntos, fin_juego, copiar_palabras  #que use la variable que está fuera de la función en lugar de crear una nueva dentro de la función.
 
     if not copiar_palabras:
+        entrada_apodo()
         dibujar_texto(pantalla, f"Puntaje Final para {apodo}: {puntos}", 48, ANCHO / 2, ALTO / 2)
-        pygame.display.flip()
+        pygame.display.flip() #.flip permite refrescar la pantalla
         pygame.time.wait(3000)
         guardar_puntajes({"apodo": apodo, "puntos": puntos})  # Guardar el puntaje final
-        pygame.quit()
-        sys.exit()  # Salir del programa después de mostrar el puntaje final
+        menu_principal()
 
-    palabra_seleccionada = random.choice([palabra[idioma] for palabra in copiar_palabras])
-    copiar_palabras = [palabra for palabra in copiar_palabras if palabra[idioma] != palabra_seleccionada]
-    adivinadas = ['_' for _ in palabra_seleccionada]
+    palabra_seleccionada = random.choice([palabra[idioma] for palabra in copiar_palabras]) # seleccionar una palabra aleatoria de la lista de palabras en el idioma correspondiente
+    copiar_palabras = [palabra for palabra in copiar_palabras if palabra[idioma] != palabra_seleccionada] # eliminar la palabra seleccionada de la lista de palabras
+    adivinadas = ['_' for _ in palabra_seleccionada] # inicializar la palabra adivinada con un guion para cada letra de la palabra seleccionada 
     intentos = 6
     fin_juego = False
+    letras_usadas = [] # lista para almacenar las letras que el usuario ha usado
 
     while True:
         pantalla.blit(imagen_fondo, (0, 0))
 
-        for event in pygame.event.get():
+        for event in pygame.event.get(): # Manejar eventos del juego (entradas del usuario, pulsaciones de botones, teclado, etc.)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()  # Salir del programa cuando se cierra la ventana
-            elif event.type == pygame.KEYDOWN and not fin_juego and not entrada_activa:
-                if event.unicode.isalpha():
-                    caracter = event.unicode.lower()
-                    if caracter in palabra_seleccionada:
-                        for i in range(len(palabra_seleccionada)):
-                            if palabra_seleccionada[i] == caracter:
+
+            elif event.type == pygame.KEYDOWN and not fin_juego and not entrada_activa: # Manejar entrada del usuario cuando el juego no ha terminado y el usuario no ha pulsado una tecla
+                caracter = event.unicode.lower() # Convertir la entrada del usuario a minúsculas
+                if caracter not in letras_usadas: # Verificar si la letra ya ha sido usada
+                    letras_usadas.append(caracter) # Agregar la letra a la lista de letras usadas
+                    if caracter in palabra_seleccionada: # Verificar si la letra se encuentra en la palabra seleccionada
+                        for i in range(len(palabra_seleccionada)): # Iterar sobre cada letra de la palabra seleccionada
+                            if palabra_seleccionada[i] == caracter: # Verificar si la letra es igual a la letra de la palabra seleccionada
                                 adivinadas[i] = caracter
                                 puntos += 1
+                                if '_' not in adivinadas: # Verificar si todas las letras de la palabra han sido adivinadas
+                                    SONIDO_PALABRA_DESCUBIERTA.play()  # Reproducir sonido de palabra descubierta
+                                    pygame.time.wait(1000)  # Esperar antes de continuar con la nueva palabra
+                                    juego_principal()
                     else:
                         intentos -= 1
 
-        if intentos == 0 or '_' not in adivinadas:
+        if intentos == 0: # Verificar si se han agotado los intentos para adivinar la palabra seleccionada,  si llega a 0 el juego termina
             fin_juego = True
-            if "_" not in adivinadas:
-                SONIDO_PALABRA_DESCUBIERTA.play()  # Reproducir sonido al descubrir una letra
-            else:
-                SONIDO_FIN_JUEGO.play()  
-
+            SONIDO_FIN_JUEGO.play()
+            entrada_apodo()
+            pantalla.blit(imagen_fondo, (0, 0))
+            dibujar_texto(pantalla, f"Puntaje Final para {apodo}: {puntos}", 48, ANCHO / 2, ALTO / 2)
+            pygame.display.flip()
+            pygame.time.wait(3000)
+            guardar_puntajes({"apodo": apodo, "puntos": puntos})
+            menu_principal()
+        
         # Dibujar elementos
-        dibujar_texto(pantalla, "Juego del Ahorcado", 48, *POSICION_TITULO)
-        dibujar_texto(pantalla, f"Palabra: {' '.join(adivinadas)}", 36, *POSICION_PALABRA)
-        dibujar_texto(pantalla, f"Intentos Restantes: {intentos}", 36, *POSICION_INTENTOS)
-        dibujar_texto(pantalla, f"Puntos: {puntos}", 36, *POSICION_PUNTOS)
+        dibujar_texto(pantalla, traducir("Juego del Ahorcado"), 48, *POSICION_TITULO)
+        dibujar_texto(pantalla, f"{traducir("Palabra:")} {' '.join(adivinadas)}", 36, *POSICION_PALABRA)
+        dibujar_texto(pantalla, f"{traducir('Intentos Restantes:')} {intentos}", 36, *POSICION_INTENTOS)
+        dibujar_texto(pantalla, f"{traducir('Puntos:')}{puntos}", 36, *POSICION_PUNTOS)
         dibujar_ahorcado(intentos)
 
         if fin_juego:
@@ -488,12 +565,11 @@ def juego_principal():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()  # Salir del programa cuando se cierra la ventana
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN: # Manejar pulsaciones de botón
                 if posicion_icono[0] < event.pos[0] < posicion_icono[0] + tamano_icono and posicion_icono[1] < event.pos[1] < posicion_icono[1] + tamano_icono:
                     alternar_sonido()  # Alternar sonido cuando se hace clic en el ícono
         pygame.display.flip()
 
-    pygame.quit()
 
 # Función para alternar el sonido
 def alternar_sonido():
@@ -510,14 +586,13 @@ def alternar_sonido():
     Returns:
         None
     """
-    global silencio #se usa dentro de una función para referirse a una variable que está definida fuera de la función, es decir, en el ámbito global del módulo. Esto permite modificar la variable global desde dentro de la función.
+    global silencio #que use la variable que está fuera de la función en lugar de crear una nueva dentro de la función.
     silencio = not silencio
     if silencio:
         sonido_fondo.stop()
     else:
         sonido_fondo.play(-1)  # Reproducir el sonido indefinidamente
 
-'''# Iniciar el juego
+# Iniciar el juego
 seleccionar_idioma()
-entrada_apodo()
-menu_principal()'''
+menu_principal()

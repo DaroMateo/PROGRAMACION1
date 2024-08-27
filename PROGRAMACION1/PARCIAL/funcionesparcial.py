@@ -224,7 +224,7 @@ F – Hacer un submenú que realice lo siguiente:
 
 #1-Listar por pantalla los pasajes de menor y mayor precio.
     
-def castear_precios(lista):
+def casteo_precios(lista):
     for pasajero in lista:
         precio_casteado = pasajero["Precio"]
         precio_casteado = float(precio_casteado)
@@ -232,14 +232,14 @@ def castear_precios(lista):
 
 
 def precio_min(lista:list):
-    castear_precios(lista)
-    bandera = True
+    casteo_precios(lista)
+    continuar = True
     minimo = None
     
     for pasajero in lista:
-        if bandera == True:
+        if continuar == True:
             minimo = pasajero["Precio"]
-            bandera = False
+            continuar = False
 
         if pasajero["Precio"] < minimo:
             minimo = pasajero["Precio"]
@@ -252,24 +252,24 @@ def precio_min(lista:list):
 
 
 def precio_max(lista:list):
-    castear_precios(lista)
-    bandera = True
+    casteo_precios(lista)
+    continuar = True
     maximo = None
     
     for pasajero in lista:
-        if bandera == True:
+        if continuar == True:
             maximo = pasajero["Precio"]
-            bandera = False
+            continuar = False
 
         if pasajero["Precio"] > maximo:
             maximo = pasajero["Precio"]
 
     return maximo
 
-def retornar_max_min(lista):
+def retono_max_min(lista):
     maximo = precio_max(lista)
     minimo = precio_min(lista)
-    castear_precios(lista)
+    casteo_precios(lista)
 
     for pasajero in lista:
         if pasajero["Precio"] == maximo:
@@ -286,7 +286,7 @@ def retornar_max_min(lista):
 
 #2-Calcular y mostrar la cantidad de pasajes de un destino determinado, el mismo será ingresado por el usuario por consola.
 
-def cantidad_pasajes(lista):
+def cantidad_de_pasajes(lista):
     destino = input("Buenos Aires | Madrid | París | Miami | Roma | Tokio\n\nIngrese el destino a calcular: ")
     destino = destino.lower()
     destino = destino.capitalize()
@@ -308,7 +308,7 @@ def cantidad_pasajes(lista):
 
 #3-Listar los pasajes ordenados por Fecha. Preguntar al usuario si lo quiere ordenar de manera ascendente (‘asc’) o descendente (‘desc’). Este ítem debe ser realizado por el algoritmo de ordenamiento bubble sort (burbujeo).
 
-def castear_fechas(lista):
+def casteo_fecha(lista):
     for pasajero in lista:
         fecha_casteado = pasajero["Fecha"]
         fecha_casteado = int(fecha_casteado)
@@ -338,19 +338,19 @@ def ordenar_lista_descendente(lista):
 
     return nueva_lista
 
-def asc_desc_fecha(lista):
+def ascendente_descendente_fecha(lista):
     nueva_lista = lista
-    criterio = input("\nASC = Ascendente\nDESC = Descendente\nIngrese el criterio del ordenamiento: ").upper()
+    valor = input("\nASC = Ascendente\nDESC = Descendente\nIngrese el valor del ordenamiento: ").upper()
     
-    while criterio != "ASC" and criterio != "DESC":
-        criterio = input("\nASC = Ascendente\nDESC = Descendente\nReingrese el criterio del ordenamiento:")
+    while valor != "ASC" and valor != "DESC":
+        valor = input("\nASC = Ascendente\nDESC = Descendente\nReingrese el valor del ordenamiento:")
     
-    castear_fechas(nueva_lista)
+    casteo_fecha(nueva_lista)
     
-    if criterio == "ASC":
+    if valor == "ASC":
         ordenar_lista_ascendente(nueva_lista)
 
-    if criterio == "DESC":
+    if valor == "DESC":
         ordenar_lista_descendente(nueva_lista)
 
     listar_pasajeros(nueva_lista)
@@ -367,22 +367,22 @@ def generar_json(nombre:str, lista:list, clave:str):
 
 def generar_json_fecha(lista):
     nueva_lista = []
-    criterio = input("\nASC = Ascendente\nDESC = Descendente\nIngrese el criterio del ordenamiento: ").upper()
+    valor = input("\nASC = Ascendente\nDESC = Descendente\nIngrese el valor del ordenamiento: ").upper()
     
-    while criterio != "ASC" and criterio != "DESC":
-        criterio = input("\nASC = Ascendente\nDESC = Descendente\nReingrese el criterio del ordenamiento:")
+    while valor != "ASC" and valor != "DESC":
+        valor = input("\nASC = Ascendente\nDESC = Descendente\nReingrese el valor del ordenamiento:")
     
-    castear_fechas(lista)
+    casteo_fecha(lista)
 
-    if criterio == "ASC":
+    if valor == "ASC":
         ascendente = ordenar_lista_ascendente(lista)
         nueva_lista.append(ascendente)
 
-    if criterio == "DESC":
+    if valor == "DESC":
         descendente = ordenar_lista_descendente(lista)
         nueva_lista.append(descendente)
 
-    generar_json("json.json", nueva_lista, "pasajeros")
+    generar_json("pasajeros_fecha.json", nueva_lista, "pasajeros")
         
 
 
@@ -403,7 +403,7 @@ def guardar_archivo(archivo_nombre:str, contenido_archivo:str):
 def listar_por_precio(lista):
     maximo = precio_max(lista)
     minimo = precio_min(lista)
-    castear_precios(lista)
+    casteo_precios(lista)
     texto_csv = ""
 
     for pasajero in lista:
@@ -422,7 +422,7 @@ def listar_por_precio(lista):
 
     texto_csv = maximo + "\n" + minimo
     
-    guardar_archivo("csv.csv", texto_csv)
+    guardar_archivo("lista_precios.csv", texto_csv)
 
 
 def submenu(lista):
@@ -437,15 +437,15 @@ def submenu(lista):
         match opcion:
             case 1:
                 system('cls')
-                print(retornar_max_min(lista))
+                print(retono_max_min(lista))
 
             case 2:
                 system('cls')
-                cantidad_pasajes(lista)
+                cantidad_de_pasajes(lista)
 
             case 3:
                 system('cls')
-                asc_desc_fecha(lista)
+                ascendente_descendente_fecha(lista)
 
             case 4:
                 system('cls')
@@ -461,3 +461,58 @@ def submenu(lista):
 
             case _:
                 print("La opcion ingresada no es valida.")
+
+"""G – Hacer un submenú que realice lo siguiente:
+1) Listar por pantalla los pasajes de una aerolínea determinada. El usuario deberá ingresar por consola la Aerolínea.
+2) Listar por pantalla todos los pasajes de una clase y destino determinados. El usuario deberá ingresar por consola la Clase y el Destino."""
+
+def listar_por_aerolinea(pasajeros):
+    aerolinea = input("Ingrese la aerolínea (LATAM | AA | IBERIA): ").upper()
+    while aerolinea not in ["LATAM", "AA", "IBERIA"]:
+        aerolinea = input("Ingrese una aerolínea válida (LATAM | AA | IBERIA): ").upper()
+
+    encontrados = False
+    for pasajero in pasajeros:
+        if pasajero["Aerolinea"] == aerolinea:
+            print(f"Fecha: {pasajero['Fecha']} | Clase: {pasajero['Clase']} | Origen: {pasajero['Origen']} | Destino: {pasajero['Destino']} | Precio: {pasajero['Precio']} | DNI: {pasajero['DNI_Pasajero']} | Apellido y Nombre: {pasajero['Apellido_Nombre_Pasajero']}")
+            encontrados = True
+    
+    if not encontrados:
+        print(f"No se encontraron pasajes para la aerolínea {aerolinea}.")
+
+
+def listar_por_clase_y_destino(pasajero):
+    clase = input("Ingrese la clase (Turista | Ejecutivo): ").capitalize()
+    while clase not in ["Turista", "Ejecutivo"]:
+        clase = input("Ingrese una clase válida (Turista | Ejecutivo): ").capitalize()
+
+    destino = input("Ingrese el destino (Buenos Aires | Madrid | París | Miami | Roma | Tokio): ").capitalize()
+    while destino not in ["Buenos Aires", "Madrid", "París", "Miami", "Roma", "Tokio"]:
+        destino = input("Ingrese un destino válido (Buenos Aires | Madrid | París | Miami | Roma | Tokio): ").capitalize()
+
+    encontrados = False
+    for pasajero in pasajero:
+        if pasajero["Clase"] == clase and pasajero["Destino"] == destino:
+            print(f"Fecha: {pasajero['Fecha']} | Aerolínea: {pasajero['Aerolinea']} | Precio: {pasajero['Precio']} | DNI: {pasajero['DNI_Pasajero']} | Apellido y Nombre: {pasajero['Apellido_Nombre_Pasajero']}")
+            encontrados = True
+    
+    if not encontrados:
+        print(f"No se encontraron pasajes para la clase {clase} con destino {destino}.")
+
+def submenu_listar(pasajero):
+    while True:
+        print("\nListar Pasajes por Aerolínea, Clase y Destino:\n\n1. Listar por pantalla los pasajes de una aerolínea determinada.\n2. Listar por pantalla todos los pasajes de una clase y destino determinados.\n3. Volver al menú principal.")
+
+        opcion = input("Ingrese la opción deseada: ")
+
+        if opcion == "1":
+            system('cls')
+            listar_por_aerolinea(pasajero)
+        elif opcion == "2":
+            system('cls')
+            listar_por_clase_y_destino(pasajero)
+        elif opcion == "3":
+            system('cls')
+            break
+        else:
+            print("Opción no válida. Intente nuevamente.")

@@ -27,7 +27,7 @@ continuar = True
 
 while continuar:
 
-    print("Menu de opciones:\n\nA – Cargar el archivo data.json.\nB – Alta de datos.\nC – Modificar datos.\nD – Borrar datos.\nE – Listar todos los pasajes\nF - Submenu\nG – Salir.\n")
+    print("Menu de opciones:\n\nA – Cargar el archivo data.json.\nB – Alta de datos.\nC – Modificar datos.\nD – Borrar datos.\nE – Listar todos los pasajes\nF - Submenu\nG –Listar Pasajes por Aerolínea, Clase y Destino:\nH – Salir.\n")
     
     opcion = input("Ingrese una opcion: ")
     opcion = opcion.capitalize()
@@ -41,30 +41,34 @@ while continuar:
     
     elif bandera == True:
         match opcion:
-            case "B":
+            case "B" | "b":
                 system('cls')
                 alta_pasajero(pasajeros)
                 print("El pasajero a sido dado de alta exitosamente.\n")
             
-            case "C":
+            case "C" | "c":
                 system('cls')
                 modificar_pasajero(pasajeros)
                 print("Los datos han sido modificados exitosamente.\n")
             
-            case "D":
+            case "D" | "d":
                 system('cls')
                 borrar_pasajero(pasajeros)
                 print("Los datos del pasajero han sido borrados exitosamente.\n")
             
-            case "E":
+            case "E" | "e":
                 system('cls')
                 listar_pasajeros(pasajeros)
 
-            case "F":
+            case "F" | "f":
                 system('cls')
                 submenu(pasajeros)
             
-            case "G":
+            case "G" | "g":
+                system('cls')
+                submenu_listar(pasajeros)
+            
+            case "H" | "h":
                 continuar = False
             
             case _:
