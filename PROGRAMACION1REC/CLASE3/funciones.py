@@ -215,7 +215,7 @@ def validar_cadena(mensaje:str, cadena_1:str, cadena_2:str = None, cadena_3:str 
 #7) Desarrollar una función que se encargue de medir el largo de una cadena de caracteres, deberá recibir por
 #parámetro la cadena de caracteres a evaluar y devolverá un número entero representando la longitud de
 #la cadena recibida.
-def largo_cadena(cadena:str)->int:
+def medir_cadena(cadena:str)->int:
     """
     Calcula el largo de una cadena de caracteres
 
@@ -234,12 +234,12 @@ def largo_cadena(cadena:str)->int:
         contador += 1
     return contador
 
-print(largo_cadena("Hola Mundo"))
+#print(medir_cadena("Hola Mundo"))
 
 
 #8) Desarrollar una función que determine si un número que recibirá por parámetro es primo. Si es primo
 #deberá devolver un True, de lo contrario False.
-def es_primo(numero:int)->bool:
+def validar_primo(numero:int)->bool:
     """
     Determina si un numero es primo
 
@@ -253,34 +253,46 @@ def es_primo(numero:int)->bool:
     bool
         True si el numero es primo, False de lo contrario
     """
-    for i in range(2,numero):
-        if (numero%i==0):
-            return False
-    return True
+
+    es_primo = True
+
+    if numero <= 1:
+        es_primo = False
+    
+    for i in range(2, numero // 2 + 1, 1): 
+        if(numero%i == 0):
+            es_primo = False
+            break
+    return es_primo
+
+#print(validar_primo(3))
 #9) Desarrollar una función que recibirá un número entero por parámetro, y devolverá el resultado del
 #factorial de ese número.
 def factorial(numero:int)->int:
     """
-    Calcula el factorial de un numero
-
-    Parameters
-    ----------
-    numero : int
-        El numero a evaluar
-
-    Returns
-    -------
-    int
-        El factorial del numero
+    Summary:
+    Esta funcion toma un numero numero y realiza la operacion factorial.
+    
+    Args:
+    numero (int): Numero numero >= 0.
+    
+    Returns:
+    int: Devuelve resultado. En caso de un argumento negativo retornara como error "-999".
     """
-    resultado = 1
-    for i in range(1,numero+1):
-        resultado *= i
+    resultado = 0
+
+    if numero >= 0:
+        resultado = 1
+        for i in range(numero, 0, -1):
+            resultado *= i
     return resultado
+
+#print(factorial(-2))
+
 #10) Desarrollar una función que verifique el DNI de una persona, la misma recibirá una cadena de caracteres
 #(se asume que solamente contiene caracteres numéricos). Si la cantidad de caracteres es menor a 6 o
 #mayor a 8, retornara False. Si la cantidad de caracteres está comprendida entre 6 y 8 devolverá True.
-def es_dni(cadena:str)->bool:
+def verificar_dni(cadena:str)->bool:
     """
     Determina si una cadena de caracteres es un dni
 
@@ -294,14 +306,170 @@ def es_dni(cadena:str)->bool:
     bool
         True si la cadena es un dni, False de lo contrario
     """
-    for caracter in cadena:
-        if not (caracter.isdigit()):
-            return False
-    return len(cadena)>=6 and len(cadena)<=8
+    retorno = True
+    if medir_cadena(cadena) <= 6 and medir_cadena(cadena) >= 8:
+        retorno = False
+    return retorno
+
+#print(es_dni("12345678"))
 #11) Desarrollar una función que complete el número de DNI de una persona. Recibirá una cadena de
 #caracteres (se asume que solamente contiene caracteres numéricos), deberá medirla y completar con ceros
 #a la izquierda hasta llegar a un total de 8 caracteres, y devolviendo la cadena resultante. Ej: Se ingresa
 #“123456”, y devolverá “00123456”.
+def completar_dni(cadena:str)->str:
+    """
+    Completa el dni de una persona
+
+    Parameters
+    ----------
+    cadena : str
+        La cadena de caracteres a evaluar
+
+    Returns
+    -------
+    str
+        La cadena con el dni completado
+    """
+    if  medir_cadena(cadena)<=8:
+        for _ in range(medir_cadena(cadena),8):
+            cadena = '0' + cadena
+    return cadena
+
+#print(completar_dni("123456789"))
+
 #12) Desarrollar una función que transforme una cadena de caracteres numérica a su equivalente en letras.
 #Recibirá por parámetro la cadena a transformar y devolverá el resultado en letras. Ej: “987” ->
 #"novecientos ochenta y siete". Como máximo tomar el número más grande de 3 dígitos.
+#
+    
+#    for i in range(1,10):
+        # if i == 1: 
+        #     mensaje = "uno"
+        # elif i == 2:
+        #     mensaje = "dos"
+
+def convertir_centenas(cadena:str)->str:  
+    match cadena:
+        case "100":
+            mensaje = "ciento"
+        case "200":
+            mensaje = "doscientos"                 
+        case "300":
+            mensaje = "trescientos"        
+        case "400":
+            mensaje = "cuatrocientos"
+        case "500":
+            mensaje = "quinientos"
+        case "600":
+            mensaje = "seiscientos"
+        case "7":
+            mensaje = "setecientos"
+        case "800":
+            mensaje = "ochocientos"
+        case "900":
+            mensaje = "novecientos"
+    
+    return mensaje
+
+def convertir_decenas(cadena:str)->str: 
+    match cadena:
+        case "1":
+            mensaje = "diez"
+        case "2":
+            mensaje = "veinte"                 
+        case "3":
+            mensaje = "treinta"        
+        case "4":
+            mensaje = "cuarenta"
+        case "5":
+            mensaje = "cincuenta"
+        case "6":
+            mensaje = "sesenta"
+        case "7":
+            mensaje = "setenta"
+        case "8":
+            mensaje = "ochenta"
+        case "9":
+            mensaje = "noventa"
+    return mensaje
+
+def convertir_unidades(cadena:str)->str:  
+    match cadena:
+        case "0":
+            mensaje = "cero"
+        case "1":
+            mensaje = "uno"
+        case "2":
+            mensaje = "dos"                 
+        case "3":
+            mensaje = "tres"        
+        case "4":
+            mensaje = "cuatro"
+        case "5":
+            mensaje = "cinco"
+        case "6":
+            mensaje = "seis"
+        case "7":
+            mensaje = "siete"
+        case "8":
+            mensaje = "ocho"
+        case "9":
+            mensaje = "nueve"
+    return mensaje
+
+def casos_excepcionales(cadena:str)->str:
+    match cadena:
+        case "11":
+            mensaje = "once"
+        case "12":
+            mensaje = "doce"                 
+        case "13":
+            mensaje = "trece"        
+        case "14":
+            mensaje = "catorce"
+        case "15":
+            mensaje = "cinco"
+        case "16":
+            mensaje = "dieciseis"
+        case "17":
+            mensaje = "diecisiete"
+        case "18":
+            mensaje = "dieciocho"
+        case "19":
+            mensaje = "diecinueve"
+        case "100":
+            mensaje = "cien"
+        case "500":
+            mensaje = "quinientos"
+        case "700":
+            mensaje = "setecientos"
+        case "900":
+            mensaje = "novecientos"
+        
+    return mensaje
+
+def transformar_cadena(cadena:str)->str: 
+    largo = medir_cadena(cadena)
+    resultado = ""
+    for letra in cadena:        
+    #     contador -= 1
+    #     if contador
+    
+             
+        if largo == 3 :
+            resultado = convertir_centenas(letra)
+        elif largo == 2 :
+            resultado += convertir_decenas(letra)            
+        else:
+            resultado += convertir_unidades(letra)
+                            
+        
+        largo -= 1 
+ 
+    # resultado = convertir_centenas(primer_caracter)               
+    # resultado += " " + convertir_decenas(segundo_caracter)
+    # resultado +=  convertir_unidades(tercer_caracter)
+
+    return resultado
+
+print(transformar_cadena("32"))

@@ -54,6 +54,13 @@ XY: Indican el tipo (Masculino, Femenino o una empresa)
 Z: Código Verificador'''
 
 def convertir_dni_a_8_digitos(dni):
+    
+    """
+    Convierte un DNI a una cadena de 8 caracteres, rellenando con ceros a la izquierda si es necesario.
+
+    :param dni: Número de DNI
+    :return: Cadena de 8 caracteres con el DNI
+    """
     dni_str = str(dni)
     longitud_dni = len(dni_str)
 
@@ -70,7 +77,24 @@ def convertir_dni_a_8_digitos(dni):
     return dni_str_completo
 
 def calcular_suma_xy(xy, dni_str):
+    
+    """
+    Calcula la suma XY de un CUIL/CUIT.
+    
+    Parameters
+    ----------
+    xy : int
+        Número de 2 dígitos que indica el tipo de CUIL/CUIT.
+    dni_str : str
+        Número de DNI como cadena.
+    
+    Returns
+    -------
+    int
+        Suma de los productos de cada dígito de XY con cada dígito del DNI.
+    """
     # Definir los multiplicadores para cada dígito
+
     multiplicadores = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]
     
     # Convertir XY a una cadena para tratar los dígitos por separado
@@ -90,8 +114,25 @@ def calcular_suma_xy(xy, dni_str):
     
     return suma
 
-def calcular_cuil_cuit(dni, tipo):
+def calcular_cuil_cuit(dni: str, tipo: str)-> str:
+    
     # Paso 1: Determinar XY según el tipo
+    """
+    Calcula el CUIL/CUIT de una persona.
+
+    Parameters
+    ----------
+    dni : int
+        Número de DNI.
+    tipo : str
+        Tipo de CUIL/CUIT. Puede ser 'MASCULINO', 'FEMENINO' o 'EMPRESA'.
+
+    Returns
+    -------
+    str
+        CUIL/CUIT formado por XY-DNI-Z, donde XY indica el tipo, DNI es el número de DNI y Z es el código verificador.
+    """
+
     if tipo == 'MASCULINO':
         xy = 20
     elif tipo == 'FEMENINO':
