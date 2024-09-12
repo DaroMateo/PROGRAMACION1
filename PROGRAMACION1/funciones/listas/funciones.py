@@ -129,6 +129,21 @@ def lista_vacia(lista:list,libre:str)->bool:
     return retorno
 
 def swap(lista, indice_uno, indice_dos):
+    """
+    Summary:
+
+    Intercambia dos valores de una lista
+
+    Args:
+    lista (list): lista
+    indice_uno (int): primer indice
+    indice_dos (int): segundo indice
+
+    Returns:
+    lista intercambiada
+
+    """
+    
     aux = lista[indice_uno]
     lista[indice_uno] = lista[indice_dos]
     lista[indice_dos] = aux
