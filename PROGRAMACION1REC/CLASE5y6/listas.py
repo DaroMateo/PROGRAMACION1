@@ -326,7 +326,7 @@ def buscar_num_max(lista):
             numero_max = lista[elemento]
     return numero_max
 
-print (f"El mayor valor de la lista es: {buscar_num_max(cargar_lista("ingrese un numero: ", 5, int))}")
+#print (f"El mayor valor de la lista es: {buscar_num_max(cargar_lista("ingrese un numero: ", 5, int))}")
 '''13) Crear y cargar una lista con 5 enteros por teclado. Implementar un algoritmo que identifique el menor valor de
 la lista y su posición.'''
 def identificar_valor_minimo (lista:list)->int|None:
@@ -386,10 +386,73 @@ def contar_repeticiones (lista:list,valor:int)->int:
 '''16) Desarrollar un programa que permita cargar 5 nombres de personas y sus edades respectivas. Luego de
 realizar la carga por teclado de todos los datos imprimir los nombres de las personas mayores de edad (mayores o
 iguales a 18 años). Utilizar listas paralelas.'''
+
+def validar_nombres_edades (lista_nombres:list,lista_edades:list)->list:
+    """Retorna una lista con los nombres de las personas que son mayores de edad o iguales a 18 años.
+    
+    Args:
+        lista_nombres (list): Lista de nombres de personas
+        lista_edades (list): Lista de edades de las personas
+    
+    Returns:
+        list: Lista con los nombres de las personas que son mayores de edad o iguales a 18 años
+    """
+    nombres_mayores = []
+    for i in range (len (lista_nombres)):
+        if lista_edades[i] >= 18:
+            nombres_mayores += [lista_nombres[i]]
+        """else:
+            print(f"{lista_nombres[i]} es menor de edad")"""
+    return nombres_mayores
+
+#lista_nombres_cargados = cargar_lista("Ingrese un nombre: ",5,str)
+#lista_edades_cargadas = cargar_lista("Ingrese una edad: ",5,int)
+#print(f"Nombres mayores de edad: {validar_nombres_edades (lista_nombres_cargados,lista_edades_cargadas)}")
+
 '''17) Crear y cargar dos listas con los nombres de 5 productos en una y sus respectivos precios en otra. Mostrar la
 cantidad de productos que tienen un precio mayor al primer producto ingresado.'''
+
+def validar_precios (lista_productos:list,lista_precios:list,valor:int)->list:
+    """Retorna una lista con los nombres de las personas que son mayores de edad o iguales a 18 años.
+    
+    Args:
+        lista_productos (list): Lista de nombres de productos
+        lista_precios (list): Lista de precios de los productos
+        valor (int): Precio a comparar
+
+    Returns:
+        list: Lista con los nombres de los productos que tienen un precio mayor al primer valor ingresado
+    """
+    productos_mayores = []
+    for i in range (len (lista_productos)):
+        if lista_precios[i] > valor:
+            productos_mayores += [lista_productos[i]]
+    return productos_mayores
+
+#lista_productos_cargados = cargar_lista("Ingrese producto: ",5,str)
+#lista_precios_cargadas = cargar_lista("Ingrese precio: ",5,int)
+#print(f"Los productos con un precio mayor a {lista_precios_cargadas[0]} son: {validar_precios (lista_productos_cargados,lista_precios_cargadas,lista_precios_cargadas[0])}")
+
 '''19) Realizar un programa que pida la carga de dos listas numéricas enteras de 4 elementos cada una. Generar una
 tercer lista que surja de la suma de los elementos de la misma posición de cada lista. Mostrar esta tercer lista.'''
+def sumar_listas (lista1:list,lista2:list)->list:
+    """Retorna una lista con la suma de los elementos de las listas pasadas por parâmetro
+    
+    Args:
+        lista1 (list): Lista de enteros
+        lista2 (list): Lista de enteros
+    Returns:
+        list: Lista con la suma de los elementos de las listas pasadas por parâmetro
+    """
+    lista3 = []
+    for i in range (len (lista1)):
+        lista3 += [lista1[i] + lista2[i]]
+    return lista3
+
+#lista1 = cargar_lista("Ingrese un número: ",4,int)
+#lista2 = cargar_lista("Ingrese un número: ",4,int)
+#print(f"La lista resultante es: {sumar_listas (lista1,lista2)}")
+
 '''18) Realizar un programa que permita la registración de una cantidad determinada de alumnos y sus respectivas
 notas de exámenes y se deben procesar de acuerdo a lo siguiente:
 a) Ingresar la cantidad total de alumnos. (No se debe poder acceder a las opciones b,c y d si no se ingresó a la
@@ -399,3 +462,103 @@ c) Realizar un listado que muestre los nombres, notas y condición del alumno. E
 "Promocionado" si la nota es mayor o igual a 6, "Aprobado" si la nota es 4 o 5, y colocar "Reprobado" si la
 nota es inferior a 4.
 d) Contar e imprimir por consola la cantidad de “Aprobados”, “Promocionados” y “Reprobados”.'''
+
+def registrar_alumnos():
+    alumnos = []
+    notas = []
+    return alumnos, notas
+
+def ingresar_alumnos(cantidad: int, alumnos: list, notas: list):
+    for i in range(cantidad):
+        nombre = input(f"Ingrese el nombre del alumno {i+1}: ")
+        while True:
+            nota = float(input(f"Ingrese la nota de {nombre} (0 a 10): "))
+            if 0 <= nota <= 10:
+                break
+            else:
+                print("La nota debe estar entre 0 y 10.")
+        alumnos += [nombre]
+        notas += [nota]
+
+def listar_alumnos(alumnos: list, notas: list):
+    print("\nListado de alumnos:")
+    for i in range(len(alumnos)):
+        nombre = alumnos[i]
+        nota = notas[i]
+        if nota >= 6:
+            condicion = "Promocionado"
+        elif 4 <= nota <= 5:
+            condicion = "Aprobado"
+        else:
+            condicion = "Reprobado"
+        print(f"Nombre: {nombre}, Nota: {nota}, Condición: {condicion}")
+
+def contar_condiciones(notas: list):
+    aprobados = 0
+    promocionados = 0
+    reprobados = 0
+    for nota in notas:
+        if nota >= 6:
+            promocionados += 1
+        elif 4 <= nota <= 5:
+            aprobados += 1
+        else:
+            reprobados += 1
+    print(f"\nCantidad de Promocionados: {promocionados}")
+    print(f"Cantidad de Aprobados: {aprobados}")
+    print(f"Cantidad de Reprobados: {reprobados}")
+
+def menu_carga_alumnos():
+    cantidad_alumnos = 0
+    alumnos_registrados = False
+    alumnos = []
+    notas = []
+
+    while True:
+        print("\n--- Menú ---")
+        print("a) Ingresar cantidad total de alumnos.")
+        print("b) Ingresar nombre y nota de cada alumno.")
+        print("c) Mostrar listado de alumnos con su condición.")
+        print("d) Mostrar cantidad de Aprobados, Promocionados y Reprobados.")
+        print("e) Salir.")
+        
+        opcion = input("Seleccione una opción: ").lower()
+
+        if opcion == 'a':
+            while True:
+                cantidad_alumnos = int(input("Ingrese la cantidad total de alumnos: "))
+                if cantidad_alumnos > 0:
+                    alumnos_registrados = True
+                    alumnos, notas = registrar_alumnos()
+                    print(f"Cantidad de alumnos a registrar: {cantidad_alumnos}")
+                    break
+                else:
+                    print("Debe ingresar una cantidad positiva.")
+
+        elif opcion == 'b':
+            if alumnos_registrados:
+                ingresar_alumnos(cantidad_alumnos, alumnos, notas)
+            else:
+                print("Primero debe ingresar la cantidad total de alumnos (opción 'a').")
+
+        elif opcion == 'c':
+            if alumnos_registrados and alumnos:
+                listar_alumnos(alumnos, notas)
+            else:
+                print("Primero debe registrar los alumnos y sus notas (opción 'b').")
+
+        elif opcion == 'd':
+            if alumnos_registrados and alumnos:
+                contar_condiciones(notas)
+            else:
+                print("Primero debe registrar los alumnos y sus notas (opción 'b').")
+
+        elif opcion == 'e':
+            print("Saliendo del programa...")
+            break
+
+        else:
+            print("Opción no válida. Por favor, seleccione una opción válida.")
+
+
+menu_carga_alumnos()
