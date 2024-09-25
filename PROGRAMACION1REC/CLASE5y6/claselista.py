@@ -205,6 +205,9 @@ def cargar_lista(mensaje:str, cantidad:int, tipo:type)->list:
     return lista
 
 def mostrar_lista(lista:list)->None:
+    '''
+    La funcion recibe una lista y la muestra por pantalla
+    '''
     for elem in lista:
         print(elem)
 
@@ -339,15 +342,6 @@ def identificar_valor_minimo (lista:list)->int|None:
 
 '''14) Ingresar por teclado los nombres de 5 personas y almacenarlos en una lista. Mostrar el nombre de la persona
 con el nombre más corto.'''
-def cargar_lista(tam:int, mensaje:str, tipo:type)->list:
-    lista = []
-
-    for i in range(tam):
-        elemento = input(f"{i+1}" + mensaje)
-        elemento = tipo(elemento)
-        lista += [elemento]
-
-    return lista 
        
 
 def identificar_valor_minimo(lista: list) -> int | None:
@@ -397,45 +391,112 @@ print(f"El numero mas chico es: {numero_mas_chico} y su indice es {indice_numero
 '''15) Cargar una lista con 5 elementos enteros. Imprimir el mayor y un mensaje si se repite dentro de la lista (es decir
 si dicho valor se encuentra en 2 o más posiciones en la lista)'''
 
-def cargar_lista(tam:int, mensaje:str, tipo:type)->list:
-    lista = []
+def determinar_repetidos(lista:list, valor:int)->int:
+    contador = 0
+    for elemento in lista:
+        if elemento == valor:
+            contador += 1
+    return contador
 
-    for i in range(tam):
-        elemento = input(f"{i+1}" + mensaje)
-        elemento = tipo(elemento)
-        lista += [elemento]
+"""lista_cargada = cargar_lista("Ingrese un numero entero: ", 5, int)
+valor_maximo = identificar_valor_maximo(lista_cargada)
+cantidad_repetidos = determinar_repetidos(lista_cargada, valor_maximo)
+print(f"El valor maximo es: {valor_maximo}")
+if cantidad_repetidos >= 2:
+    print(f"Se repetio el maximo {cantidad_repetidos} veces")"""
 
-    return lista 
+'''16) Desarrollar un programa que permita cargar 5 nombres de personas y sus edades respectivas. Luego de
+realizar la carga por teclado de todos los datos imprimir los nombres de las personas mayores de edad (mayores o
+iguales a 18 años). Utilizar listas paralelas.'''
 
-
-
-def identificar_string_mas_corto(lista:list)->str:
-    string_mas_corto = None
+def cargar_listas_paralelas(cantidad:int, mensaje_a:str, mensaje_b:str, lista_a:list, lista_b:list)->list:
     
-    for elem in lista:
-       if string_mas_corto == None or len(elem) < len(string_mas_corto):
-           string_mas_corto = elem
+    """
+    Carga una cantidad determinada de nombres y edades en dos listas paralelas.
+    
+    Args:
+        cantidad (int): Cantidad de nombres y edades a cargar.
+        mensaje_a (str): Mensaje a mostrar para pedir el nombre.
+        mensaje_b (str): Mensaje a mostrar para pedir la edad.
+        lista_a (list): Lista de nombres.
+        lista_b (list): Lista de edades.
+    
+    Returns:
+        list: Una lista con los nombres y otra con las edades, ambas de igual longitud.
+    """
+    for _ in range (cantidad):
+        valor_a = input(mensaje_a)
+        valor_b = input(mensaje_b)
+        lista_a += [valor_a]
+        lista_b += [valor_b]
+    return lista_a, lista_b
 
-    return string_mas_corto   
+def mostrar_mayores(lista_a, lista_b, valor_b)->None:
+
+    for i in range(len(lista_b)):
+        if int(lista_b[i]) >= valor_b:
+            print(lista_a[i])
 
 
-def posicion_numero_minimo(lista:list, numero_menor:int)->list:
-    lista_indice = []
+
+#lista_nombres = []
+#lista_edades = []
+
+#cargar_listas_paralelas(5, "Ingrese nombre: ", "Ingrese edad: ", lista_nombres, lista_edades)
+#mostrar_mayores(lista_nombres, lista_edades, 18)
+
+#print(f"El nombres de las personas mayores de edad son: {lista_nombres} y sus edades son: {lista_edades}")
+
+'''17) Crear y cargar dos listas con los nombres de 5 productos en una y sus respectivos precios en otra. Mostrar la
+cantidad de productos que tienen un precio mayor al primer producto ingresado.'''
+
+def contar_mayor_que_primero(lista:list)->int:
+    contador = 0
     for i in range(len(lista)):
-        if lista[i] == numero_menor:
-            lista_indice += [i]
-    return lista_indice 
+        if i == 0:
+            primer_valor = lista[i]
+        elif lista[i] > primer_valor:
+            contador += 1
+    return contador
 
-def convertir_string_en_entero(lista:list)->list:
-    lista_largos = []
-    for i in range(len(lista)):
-        lista_largos += [len(lista[i])]
-    return lista_largos    
+'''lista_nombres = []
 
-           
-print("LISTA NOMBRES")
+lista_precios = []'''
 
-lista_nombres = cargar_lista(5, ".Ingrese nombre: ", str)
+'''cargar_lista_paralelas(5,"Ingrese el nombre del producto: ", "Ingrese el valor del producto: ", lista_nombres, lista_precios)
 
-nombre_mas_corto = identificar_string_mas_corto(lista_nombres)
-print("El nombre mas corto es: ", nombre_mas_corto)
+mayores_a_primer_valor = contar_mayor_que_primero(lista_precios)
+
+print(f"La cantidad de productos que superan el precio del primer producto es de: {mayores_a_primer_valor}")'''
+
+
+'''Realizar un programa que pida la carga de dos listas numéricas enteras de 4 elementos cada una. Generar una
+tercer lista que surja de la suma de los elementos de la misma posición de cada lista. Mostrar esta tercer lista'''
+
+def sumar_listas (lista_a:list, lista_b: list) -> list:
+    lista_c = []
+    for i in range(len(lista_a)):
+        lista_c += [int(lista_a[i]) + int(lista_b[i])]
+    return lista_c
+
+
+
+#lista_numeros_a = []
+#listas_numeros_b = []
+
+#cargar_listas_paralelas(4, "Ingrese numero:", "Ingrese otro numero:", lista_numeros_a, listas_numeros_b)
+#resultado = sumar_listas (lista_numeros_a, listas_numeros_b)
+#print("La lista resultante es:")
+#mostrar_lista(resultado)
+
+'''18) Realizar un programa que permita la registración de una cantidad determinada de alumnos y sus respectivas
+notas de exámenes y se deben procesar de acuerdo a lo siguiente:
+a) Ingresar la cantidad total de alumnos. (No se debe poder acceder a las opciones b,c y d si no se ingresó a la
+opción “a”)
+b) Ingresar nombre y nota de cada alumno (almacenar los datos en dos listas paralelas).
+c) Realizar un listado que muestre los nombres, notas y condición del alumno. En la condición, colocar
+"Promocionado" si la nota es mayor o igual a 6, "Aprobado" si la nota es 4 o 5, y colocar "Reprobado" si la
+nota es inferior a 4.
+d) Contar e imprimir por consola la cantidad de “Aprobados”, “Promocionados” y “Reprobados”.'''
+
+
