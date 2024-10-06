@@ -1,1 +1,1 @@
-from parcial_1.biblioteca import *
+from biblioteca import *
