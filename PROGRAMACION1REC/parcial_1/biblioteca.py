@@ -270,10 +270,9 @@ def menu():
                     conteo = contar_caracteres(lista_alfanumerica)
                     print("CARACTER | CANTIDAD")
                     print("---------+---------")
-                    # Iterar sobre el rango de 26 para acceder a cada letra
                     for i in range(26):  
-                        cantidad = conteo[i]  # Obtener la cantidad usando el índice
-                        caracter = chr(i + ord('A'))  # Convertir el índice a su correspondiente carácter
+                        cantidad = conteo[i]  
+                        caracter = chr(i + ord('A'))  
                         print(f"   {caracter}    |    {cantidad}")
                 else:
                     print("Primero debe generar la lista alfanumérica (opción 1).")
