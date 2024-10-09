@@ -15,9 +15,9 @@ def generar_lista_alfanumerica():
     for _ in range(1000):
         num = random.randint(0, 35)
         if num < 10:
-            lista.append(chr(num + 48))  # 0-9
+            lista += chr(num + 48)  # 0-9
         else:
-            lista.append(chr(num - 10 + 65))  # A-Z
+            lista += chr(num - 10 + 65)  # A-Z
     return lista
 
 # Función para ordenar una lista alfanumérica
@@ -68,53 +68,53 @@ def mostrar_matriz(matriz):
 # Función para contar la cantidad de cada carácter alfabético
 def contar_caracteres(lista):
     """
-    Crea un diccionario que contiene como clave cada carácter alfabético mayúscula
-    y como valor la cantidad de veces que se repite en la lista.
+    Cuenta la cantidad de veces que se repite cada carácter alfabético mayúscula
+    en la lista, sin utilizar un diccionario.
     
     Parameters:
     lista (list): lista de caracteres alfanuméricos
     
     Returns:
-    dict: diccionario con la cantidad de veces que se repite cada carácter alfabético
+    list: lista de conteo donde el índice corresponde a la letra mayúscula (0 para 'A', 1 para 'B', ..., 25 para 'Z')
     """
-    conteo = {}
-    # Inicializar el diccionario con todas las letras del alfabeto en mayúsculas
-    for i in range(65, 91):  # Códigos ASCII de 'A' a 'Z'
-        conteo[chr(i)] = 0
+    # Crear una lista de conteo para las letras de 'A' a 'Z'
+    conteo = [0] * 26  # 26 letras en el alfabeto
     
     # Contar cada carácter en la lista
     for caracter in lista:
         if 'A' <= caracter <= 'Z':  # Verificar si el carácter es una letra mayúscula
-            conteo[caracter] += 1
-
+            indice = ord(caracter) - ord('A')  # Calcular el índice correspondiente
+            conteo[indice] += 1
+    
     return conteo
+
 
 # Función para obtener el caracter que más y menos se repite
 def obtener_max_min(conteo):
-    # Inicializar valores máximos y mínimos
     """
-    Obtiene el caracter que más y menos se repite en un diccionario de conteo.
+    Obtiene el caracter que más se repite y el caracter que menos se repite en una lista de
+    caracteres alfabéticos mayúsculas, y sus respectivas cantidades de repeticiones.
     
     Parameters:
-    conteo (dict): Diccionario que contiene como clave cada carácter alfabético
-                   y como valor la cantidad de veces que se repite.
+    conteo (list): lista de conteo donde el índice corresponde a la letra mayúscula (0 para 'A', 1 para 'B', ..., 25 para 'Z')
     
     Returns:
-    tuple: Tupla que contiene el caracter que más se repite, la cantidad de veces que se repite,
-           el caracter que menos se repite y la cantidad de veces que se repite.
+    tuple: (caracter_max, cantidad_max, caracter_min, cantidad_min)
     """
-    max_caracter = None
-    min_caracter = None
     max_cantidad = -1
     min_cantidad = float('inf')
-
-    # Iterar sobre el diccionario de conteo
-    for caracter in conteo:
-        cantidad = conteo[caracter]
+    max_caracter = ''
+    min_caracter = ''
+    
+    for i in range(26):
+        cantidad = conteo[i]
+        caracter = chr(i + ord('A'))
+        
         if cantidad > max_cantidad:
             max_cantidad = cantidad
             max_caracter = caracter
-        if cantidad < min_cantidad:
+        
+        if cantidad < min_cantidad and cantidad > 0:
             min_cantidad = cantidad
             min_caracter = caracter
 
@@ -269,8 +269,11 @@ def menu():
                 if lista_alfanumerica:
                     conteo = contar_caracteres(lista_alfanumerica)
                     print("CARACTER | CANTIDAD")
-                    for caracter in conteo:  
-                        cantidad = conteo[caracter]  # Obteniendo cantidad sin métodos
+                    print("---------+---------")
+                    # Iterar sobre el rango de 26 para acceder a cada letra
+                    for i in range(26):  
+                        cantidad = conteo[i]  # Obtener la cantidad usando el índice
+                        caracter = chr(i + ord('A'))  # Convertir el índice a su correspondiente carácter
                         print(f"   {caracter}    |    {cantidad}")
                 else:
                     print("Primero debe generar la lista alfanumérica (opción 1).")
@@ -278,8 +281,12 @@ def menu():
                 if lista_alfanumerica:
                     conteo = contar_caracteres(lista_alfanumerica)
                     max_caracter, max_cantidad, min_caracter, min_cantidad = obtener_max_min(conteo)
-                    print(f"El carácter que más veces se repite: {max_caracter} ({max_cantidad})")
-                    print(f"El carácter que menos veces se repite: {min_caracter} ({min_cantidad})")
+                    
+                    if max_caracter and min_caracter:  # Asegurarse de que se hayan encontrado caracteres
+                        print(f"El carácter que más veces se repite: {max_caracter} ({max_cantidad})")
+                        print(f"El carácter que menos veces se repite: {min_caracter} ({min_cantidad})")
+                    else:
+                        print("No se encontraron caracteres mayúsculos en la lista.")
                 else:
                     print("Primero debe generar la lista alfanumérica (opción 1).")
             case '5':
