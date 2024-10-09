@@ -116,6 +116,15 @@ def buscar_secuencia(matriz, secuencia):
             return True
     return False
 
+def mnostrar_secuencia_en_matriz(matriz, secuencia):
+    for i in range(len(matriz)):
+        for j in range(len(matriz[i])):
+            if str(matriz[i][j]) in secuencia:
+                print("X", end=" ")
+            else:
+                print("0", end=" ")
+        print()
+
 # Menú de opciones
 def menu():
     lista_alfanumerica = []
@@ -139,9 +148,15 @@ def menu():
                 mostrar_lista(lista_alfanumerica)
             case '2':
                 if lista_alfanumerica:
-                    criterio = input("Ingrese el criterio de ordenamiento (ASC/DESC): ").upper()
-                    lista_alfanumerica = ordenar_lista(lista_alfanumerica, criterio)
-                    print(f"Lista ordenada ({criterio}).")
+                    criterio = input("Ingrese el criterio de ordenamiento (ASC/DESC): ")
+                    criterio_convertido = ''
+                    for char in criterio:
+                        if 'a' <= char <= 'z':
+                            criterio_convertido += chr(ord(char) - 32)
+                        else:
+                            criterio_convertido += char
+                    lista_alfanumerica = ordenar_lista(lista_alfanumerica, criterio_convertido)
+                    print(f"Lista ordenada ({criterio_convertido}).")
                     mostrar_lista(lista_alfanumerica)
                 else:
                     print("Primero debe generar la lista alfanumérica (opción 1).")
@@ -149,7 +164,8 @@ def menu():
                 if lista_alfanumerica:
                     conteo = contar_caracteres(lista_alfanumerica)
                     print("CARACTER | CANTIDAD")
-                    for caracter, cantidad in conteo.items():
+                    for caracter in conteo:  
+                        cantidad = conteo[caracter]  # Obteniendo cantidad sin métodos
                         print(f"   {caracter}    |    {cantidad}")
                 else:
                     print("Primero debe generar la lista alfanumérica (opción 1).")
@@ -173,6 +189,7 @@ def menu():
                     secuencia = validar_ingreso_entero()
                     if buscar_secuencia(matriz, secuencia):
                         print(f"La secuencia numérica {secuencia} existe en la matriz.")
+                        mnostrar_secuencia_en_matriz(matriz, secuencia)
                     else:
                         print(f"La secuencia numérica {secuencia} no existe en la matriz.")
             case '7':
