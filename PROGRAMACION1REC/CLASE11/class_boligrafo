@@ -48,8 +48,7 @@ class Boligrafo:
             resultado = "Lapicera recargada"
 
         return resultado
-
-
+    
 boligrafo_fino = Boligrafo("gris", "punta fina")
 print(boligrafo_fino.escribir('Hola'))
 print("-------------------------------------")
