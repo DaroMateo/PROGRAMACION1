@@ -1,0 +1,56 @@
+# class_boligrafo.py
+class Boligrafo:
+    # capacidad_tinta_maxima = 100
+    # cantidad_tinta = 80
+
+    def __init__(self, color:str, grosor_punta:str):
+        """
+        Inicializa un objeto de la clase Boligrafo con los valores proporcionados por par metro.
+        
+        Args:
+            color (str): Color del boligrafo.
+            grosor_punta (str): Grosor de la punta del boligrafo.
+        
+        Attributes:
+            color (str): Color del boligrafo.
+            grosor_punta (str): Grosor de la punta del boligrafo.
+            cantidad_tinta (int): Cantidad de tinta disponible en el boligrafo. Por defecto, 80.
+            capacidad_tinta_maxima (int): Capacidad m xima de tinta que puede contener el boligrafo. Por defecto, 100.
+        """
+        self.color = color
+        self.grosor_punta = grosor_punta
+        self.cantidad_tinta = 80
+        self.capacidad_tinta_maxima = 100
+
+    def escribir(self, texto:str) -> str:
+        """Escribe el texto recibido por par metro. Si la cantidad de tinta disponible es menor al largo del texto,
+        devuelve "No alcanza la tinta". De lo contrario, devuelve el texto y resta la cantidad de caracteres escritos
+        a la cantidad de tinta disponible.
+        
+        Parameters:
+        texto (str): El texto a escribir
+        Returns:
+        str: El texto escrito o "No alcanza la tinta" si no hay suficiente tinta
+        """
+        resultado = "No alcanza la tinta"
+        if self.cantidad_tinta >= len(texto):
+            self.cantidad_tinta -= len(texto)
+            resultado = texto
+        return resultado
+
+    def recargar(self, cantidad:int):
+        if (self.cantidad_tinta + cantidad) > self.capacidad_tinta_maxima:
+            sobra = (self.cantidad_tinta + cantidad) - self.capacidad_tinta_maxima
+            self.cantidad_tinta = self.capacidad_tinta_maxima
+            resultado = f"Se recargó la lapicera y sobro {sobra} de tinta"
+        else:
+            self.cantidad_tinta += cantidad
+            resultado = "Lapicera recargada"
+
+        return resultado
+
+
+boligrafo_fino = Boligrafo("gris", "punta fina")
+print(boligrafo_fino.escribir('Hola'))
+print("-------------------------------------")
+print(boligrafo_fino.recargar(50))

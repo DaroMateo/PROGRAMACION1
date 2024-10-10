@@ -13,7 +13,7 @@ def generar_lista_alfanumerica():
     
     lista = []
     for _ in range(1000):
-        num = random.randint(0, 35)
+        num = random.randint(0, 35) # el (0,35) es para que no se repita el 0
         if num < 10:
             lista += chr(num + 48)  # 0-9
         else:
@@ -211,7 +211,7 @@ def mostrar_secuencia_en_matriz(matriz, secuencia):
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):
             if str(matriz[i][j]) in secuencia:
-                print("X", end=" ")
+                print("1", end=" ")
             else:
                 print("0", end=" ")
         print()
@@ -265,6 +265,7 @@ def menu():
                     mostrar_lista(lista_alfanumerica)
                 else:
                     print("Primero debe generar la lista alfanumérica (opción 1).")
+                    menu()
             case '3':
                 if lista_alfanumerica:
                     conteo = contar_caracteres(lista_alfanumerica)
@@ -276,6 +277,7 @@ def menu():
                         print(f"   {caracter}    |    {cantidad}")
                 else:
                     print("Primero debe generar la lista alfanumérica (opción 1).")
+                    menu()
             case '4':
                 if lista_alfanumerica:
                     conteo = contar_caracteres(lista_alfanumerica)
@@ -288,6 +290,7 @@ def menu():
                         print("No se encontraron caracteres mayúsculos en la lista.")
                 else:
                     print("Primero debe generar la lista alfanumérica (opción 1).")
+                    menu()
             case '5':
                 matriz = generar_matriz()
                 print("Matriz de 10x10 generada:")
@@ -296,6 +299,7 @@ def menu():
             case '6':
                 if not matriz:
                     print("Primero debe generar la matriz aleatoria de números enteros (opción 5).")
+                    menu()
                 else:
                     secuencia = validar_ingreso_entero()
                     if buscar_secuencia(matriz, secuencia):
