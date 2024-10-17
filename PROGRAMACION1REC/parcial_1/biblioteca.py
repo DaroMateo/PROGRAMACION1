@@ -1,4 +1,5 @@
 import random
+from os import system
 
 # Función para generar una lista alfanumérica de 1000 elementos usando códigos ASCII
 def generar_lista_alfanumerica():
@@ -13,8 +14,8 @@ def generar_lista_alfanumerica():
     
     lista = []
     for _ in range(1000):
-        num = random.randint(0, 35) # el (0,35) es para que no se repita el 0
-        if num < 10:
+        num = random.randint(0, 35) # el (0,35) es para que no se repita el 0, es la suma de los 10 numeros y 25 letras
+        if num < 10: 
             lista += chr(num + 48)  # 0-9
         else:
             lista += chr(num - 10 + 65)  # A-Z
@@ -216,6 +217,25 @@ def mostrar_secuencia_en_matriz(matriz, secuencia):
                 print("0", end=" ")
         print()
 
+def mostrar_lista_de_numeros_repetidos(conteo):
+    conteo = contar_caracteres(conteo)
+    print("CARACTER | CANTIDAD")
+    print("---------+---------")
+    for i in range(26):  
+        cantidad = conteo[i]  
+        caracter = chr(i + ord('A'))  
+        print(f"   {caracter}    |    {cantidad}")
+
+def mostrar_max_min(conteo):
+    conteo = contar_caracteres(conteo)
+    max_caracter, max_cantidad, min_caracter, min_cantidad = obtener_max_min(conteo)
+    
+    if max_caracter and min_caracter:  # Asegurarse de que se hayan encontrado caracteres
+        print(f"El carácter que más veces se repite: {max_caracter} ({max_cantidad})")
+        print(f"El carácter que menos veces se repite: {min_caracter} ({min_cantidad})")
+    else:
+        print("No se encontraron caracteres mayúsculos en la lista.")
+
 # Menú de opciones
 def menu():
     """
@@ -234,16 +254,16 @@ def menu():
     """
     lista_alfanumerica = []
     matriz = []
-    
+    flag = False
     while True:
-        print("\nMenú de Opciones:")
-        print("1 – Generar la lista alfanumérica aleatoria")
-        print("2 – Ordenar la lista alfanumérica")
-        print("3 – Buscar e informar cuantas veces se repite cada carácter alfabético")
-        print("4 – Obtener el carácter que más y menos se repite")
-        print("5 – Generar la matriz aleatoria de números enteros")
-        print("6 – Buscar una secuencia numérica en la matriz")
-        print("7 – Salir")
+        print("\nMenú de Opciones:\n"
+            "1 – Generar la lista alfanumérica aleatoria\n"
+            "2 – Ordenar la lista alfanumérica\n"
+            "3 – Buscar e informar cuantas veces se repite cada carácter alfabético\n"
+            "4 – Obtener el carácter que más y menos se repite\n"
+            "5 – Generar la matriz aleatoria de números enteros\n"
+            "6 – Buscar una secuencia numérica en la matriz\n"
+            "7 – Salir")
         opcion = input("Seleccione una opción: ")
         
         match opcion:
@@ -252,6 +272,7 @@ def menu():
                 print("Lista alfanumérica generada.")
                 mostrar_lista(lista_alfanumerica)
             case '2':
+                system('cls')
                 if lista_alfanumerica:
                     criterio = input("Ingrese el criterio de ordenamiento (ASC/DESC): ")
                     criterio_convertido = ''
@@ -267,36 +288,26 @@ def menu():
                     print("Primero debe generar la lista alfanumérica (opción 1).")
                     menu()
             case '3':
+                system('cls')
                 if lista_alfanumerica:
-                    conteo = contar_caracteres(lista_alfanumerica)
-                    print("CARACTER | CANTIDAD")
-                    print("---------+---------")
-                    for i in range(26):  
-                        cantidad = conteo[i]  
-                        caracter = chr(i + ord('A'))  
-                        print(f"   {caracter}    |    {cantidad}")
+                    mostrar_lista_de_numeros_repetidos(lista_alfanumerica)
                 else:
                     print("Primero debe generar la lista alfanumérica (opción 1).")
                     menu()
             case '4':
+                system('cls')
                 if lista_alfanumerica:
-                    conteo = contar_caracteres(lista_alfanumerica)
-                    max_caracter, max_cantidad, min_caracter, min_cantidad = obtener_max_min(conteo)
-                    
-                    if max_caracter and min_caracter:  # Asegurarse de que se hayan encontrado caracteres
-                        print(f"El carácter que más veces se repite: {max_caracter} ({max_cantidad})")
-                        print(f"El carácter que menos veces se repite: {min_caracter} ({min_cantidad})")
-                    else:
-                        print("No se encontraron caracteres mayúsculos en la lista.")
+                    mostrar_max_min(lista_alfanumerica)
                 else:
                     print("Primero debe generar la lista alfanumérica (opción 1).")
                     menu()
             case '5':
+                system('cls')
                 matriz = generar_matriz()
                 print("Matriz de 10x10 generada:")
-                for fila in matriz:
-                    print(fila)
+                mostrar_matriz(matriz)
             case '6':
+                system('cls')
                 if not matriz:
                     print("Primero debe generar la matriz aleatoria de números enteros (opción 5).")
                     menu()
@@ -309,3 +320,6 @@ def menu():
                         print(f"La secuencia numérica {secuencia} no existe en la matriz.")
             case '7':
                 break
+        system('pause')
+
+menu()

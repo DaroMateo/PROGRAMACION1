@@ -20,7 +20,7 @@ def imprimir_matriz(matriz:list)->None:
     for i in range (len(matriz)):
         for j in range (len(matriz[i])):
             print(f"{matriz[i][j]:3}", end=" ")
-        print("")
+        print(" ")
 
 def buscar_coordenada_matriz(matriz:list, dato:int)->list: #Print mas lista con coordenada
     '''
