@@ -31,6 +31,21 @@ def eliminar_indice(lista:list, mensaje:str) -> str:
     dato_eliminado = lista.pop(indice)
     return dato_eliminado
 
+def buscar_nombre(lista:list, mensaje:str) -> str:
+    dato = input(mensaje)
+    indice = lista.index(dato)
+    return indice
+
+def orden_desendente (lista:list) -> None:
+    lista.sort(reverse=True)
+
+def copia_lista (lista:list) -> list:
+    copia = lista.copy()
+    return copia
+
+def elimniar_todos_los_elementos (lista:list) -> None:
+    lista.clear()
+
 '''
 Declarar una lista vacía, y manipularla mediante métodos de listas, mostrando los resultados después de cada operación:
 '''
@@ -75,6 +90,19 @@ mostrar_lista(lista_dos)
 print(f'se elimino {dato_eliminado}')
 
 # 7) Ingresar un nombre por consola, buscarlo e informar su índice.
+print('punto 7')
+nombre = input('ingrese el nombre a buscar: ')
+print(f'el nombre {nombre} se encuentra en el indice {lista_dos.index(nombre)}')
 # 8) Ordenar los nombres descendentemente.
+print('punto 8')
+lista_dos.sort(reverse=True)
+mostrar_lista(lista_dos)
 # 9) Crear una copia de la lista.
+print('punto 9')
+copia = lista_dos.copy()
+mostrar_lista(copia)
 # 10) Limpiar la lista original eliminando todos sus elementos, mostrar la lista original y la copia.
+print('punto 10')
+lista_dos.clear()
+mostrar_lista(lista_dos)
+mostrar_lista(copia)
