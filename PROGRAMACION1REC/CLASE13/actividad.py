@@ -164,8 +164,8 @@ def convertir_a_snake_case(cadena:str) -> str:
     cadena_snake = "_".join(lista_palabras)
     return cadena_snake
 
-cadena = "     HOLA     MUNDO      "
-print(convertir_a_snake_case(cadena))
+#cadena = "     HOLA     MUNDO      "
+#print(convertir_a_snake_case(cadena))
 
 # 9) Desarrolle la función “contar_letras_unicas()”, que recibirá por parámetro una cadena de
 # caracteres y se encargará de contar cuantas letras únicas contiene. Las letras mayúsculas y
@@ -182,12 +182,18 @@ def contar_letras_unicas(texto):
     
     return len(letras_vistas)
 
-print(contar_letras_unicas(cadena))
+#print(contar_letras_unicas(cadena))
 
 #print(contar_letras_unicas(palabra_2))
 # 10) Desarrolle la función “resaltar_palabra()”, que recibirá por parámetro una texto y una palabra
 # y reemplazará todas las ocurrencias de esa palabra por la versión mayúscula de la misma,
 # devolviendo el texto resultante.
+
+def resaltar_palabra(texto, palabra):
+    return texto.replace(palabra, palabra.upper())
+
+# cadena = 'hola mundo'
+# print(resaltar_palabra(cadena, 'hola'))
 
 
 
