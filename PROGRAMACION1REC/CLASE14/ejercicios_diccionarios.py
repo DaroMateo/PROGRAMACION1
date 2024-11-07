@@ -61,27 +61,29 @@ def calcular_promedio (lista_de_alumnos:list[dict], clave_parametro :str, ident:
        
         for clave in alumno.keys():
             if clave[0:4] == ident:
-                acumulador += int(alumno[clave])
-                contador += 1
+                if alumno.get("Nota") is not None:
+                    acumulador += int(alumno["Nota"])
+                    contador += 1
 
         #promedio = (int(alumno["nota_pp"]) + int(alumno["nota_sp"])) / 2
-        promedio = acumulador / contador
-        alumno.update({clave_parametro:promedio})
-        retorno = True
+        if contador > 0:
+            promedio = acumulador / contador
+            alumno.update({clave_parametro:promedio})
+            retorno = True
 
     return retorno
 # 4) Desarrolle una función que informe por cada alumno de la lista su estado académico (promedio de 1 al
 # 4: desaprobado, 4 o 5: aprobado, y 6 o más: promocionado).
-def estado_academico(alumno: dict,clave:str) -> bool:
+def estado_academico(alumno: dict,clave_parametro:str) -> bool:
     retorno = False
-    if int(alumno[clave]) >= 6:
-        print(f"{alumno['nombre']} es promocionado")
+    if int(alumno) >= 6:
+        alumno.update({clave_parametro:"promocionado"})
         retorno = True
-    elif int(alumno[clave]) >= 4:
-        print(f"{alumno['nombre']} es aprobado")
+    elif int(alumno) >= 4:
+        alumno.update({clave_parametro:"aprobado"})
         retorno = True
     else:
-        print(f"{alumno['nombre']} es desaprobado")
+        alumno.update({clave_parametro:"desaprobado"})
         retorno = True
     return retorno
 # 5) Desarrolle una función que informe las notas y el promedio del alumno cuyo nombre recibe por
@@ -124,7 +126,7 @@ def menu_dicc(mensaje_menu:str):
 
             case "4":
                 for alumno in lista_alumnos:
-                    estado_academico(alumno,"Promedio")
+                    estado_academico(alumno,"Estado Academico")
 
             case "0":
                 print("Gracias vuelva prontos")
