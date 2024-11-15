@@ -547,10 +547,11 @@ def juego_principal():
         
         # Dibujar elementos
         dibujar_texto(pantalla, traducir("Juego del Ahorcado"), 48, *POSICION_TITULO)
-        dibujar_texto(pantalla, f"{traducir("Palabra:")} {' '.join(adivinadas)}", 36, *POSICION_PALABRA)
+        dibujar_texto(pantalla, f"{traducir('Palabra:')} {' '.join(adivinadas)}", 36, *POSICION_PALABRA)
         dibujar_texto(pantalla, f"{traducir('Intentos Restantes:')} {intentos}", 36, *POSICION_INTENTOS)
         dibujar_texto(pantalla, f"{traducir('Puntos:')}{puntos}", 36, *POSICION_PUNTOS)
         dibujar_ahorcado(intentos)
+
 
         if fin_juego:
             pygame.time.wait(1000)
