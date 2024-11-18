@@ -17,6 +17,10 @@
             "puntos": 22
         },
         {
+            "apodo": "dario",
+            "puntos": 19
+        },
+        {
             "apodo": "daromateo",
             "puntos": 18
         },
@@ -25,11 +29,11 @@
             "puntos": 16
         },
         {
-            "apodo": "eduardo",
+            "apodo": "kevin",
             "puntos": 14
         },
         {
-            "apodo": "kevin",
+            "apodo": "eduardo",
             "puntos": 14
         },
         {
@@ -49,12 +53,16 @@
             "puntos": 4
         },
         {
+            "apodo": "damian",
+            "puntos": 2
+        },
+        {
             "apodo": "ezequiel",
             "puntos": 2
         },
         {
-            "apodo": "damian",
-            "puntos": 2
+            "apodo": "dao",
+            "puntos": 1
         },
         {
             "apodo": "cristian",
