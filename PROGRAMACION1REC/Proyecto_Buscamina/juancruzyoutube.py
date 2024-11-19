@@ -88,6 +88,7 @@ def color_numero(element,color):
     pygame.ventana.blit(valor_casilla,(calidades_casilla[element]['posicion_xy'].x + (tamano_cuadricula / 4),calidades_casilla[element]['posicion_xy'].y + (tamano_cuadricula / 8)))
     pygame.display.update()
 
+
 def click_casilla(numero,event,dificultad):
     global primera_celda_pulsada, bombas_restantes, bombas_correctas
     for element in calidades_casilla:
