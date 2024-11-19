@@ -351,6 +351,9 @@ def dibujar_tablero(matriz, descubiertas, banderas, pantalla, fuente, tam_casill
     # Cargar imagen de bandera
     imagen_bandera = pygame.image.load(r"PROGRAMACION1REC\Proyecto_Buscamina\images\flag.png")
 
+    # Cargar imagen para celdas vacías (sin minas ni minas cercanas)
+    imagen_vacia = pygame.image.load(r"PROGRAMACION1REC\Proyecto_Buscamina\images\empty-block.png")
+
     filas, columnas = len(matriz), len(matriz[0])
 
     for fila in range(filas):
@@ -369,6 +372,10 @@ def dibujar_tablero(matriz, descubiertas, banderas, pantalla, fuente, tam_casill
                     if imagen_numero:
                         imagen_redimensionada = pygame.transform.scale(imagen_numero, (tam_casilla, tam_casilla))
                         pantalla.blit(imagen_redimensionada, (x, y))
+                # Si la celda está vacía (sin minas ni minas cercanas)
+                elif matriz[fila][columna] == 0:
+                    imagen_vacia_redimensionada = pygame.transform.scale(imagen_vacia, (tam_casilla, tam_casilla))
+                    pantalla.blit(imagen_vacia_redimensionada, (x, y))
             else:
                 # Dibujar celda oculta
                 pygame.draw.rect(pantalla, (100, 100, 100), (x, y, tam_casilla, tam_casilla))
@@ -378,6 +385,7 @@ def dibujar_tablero(matriz, descubiertas, banderas, pantalla, fuente, tam_casill
                 if banderas[fila][columna]:
                     bandera_redimensionada = pygame.transform.scale(imagen_bandera, (tam_casilla, tam_casilla))
                     pantalla.blit(bandera_redimensionada, (x, y))
+
 
 #Menu y Bucle principal
 
