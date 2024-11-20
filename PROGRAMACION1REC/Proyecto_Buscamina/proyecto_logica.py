@@ -51,7 +51,7 @@ imagen_bandera_mina = pygame.image.load(r"PROGRAMACION1REC\Proyecto_Buscamina\im
 
 # Fuentes
 fuente = pygame.font.Font(NOMBRE_FUENTE, 36)  # Tamaño de la fuente de texto (36 pixeles) 
-fuente_pequena = pygame.font.SysFont(None, 36)
+#fuente_pequena = pygame.font.SysFont(None, 36)
 
 # Configurar pantalla
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
@@ -338,8 +338,7 @@ def mostrar_ranking():
 
 #Dibujar tablero
 
-def dibujar_tablero(matriz, descubiertas, banderas, pantalla, fuente, tam_casilla):
-    # Cargar imágenes para los números
+def cargar_imagenes():
     imagenes_numeros = {
         1: pygame.image.load(r"PROGRAMACION1REC\Proyecto_Buscamina\images\1.png"),
         2: pygame.image.load(r"PROGRAMACION1REC\Proyecto_Buscamina\images\2.png"),
@@ -351,68 +350,74 @@ def dibujar_tablero(matriz, descubiertas, banderas, pantalla, fuente, tam_casill
         8: pygame.image.load(r"PROGRAMACION1REC\Proyecto_Buscamina\images\8.png"),
     }
 
-    # Cargar imágenes de minas y bandera
     imagen_mina = pygame.image.load(r"PROGRAMACION1REC\Proyecto_Buscamina\images\unclicked-bomb.png")
     imagen_mina_explotada = pygame.image.load(r"PROGRAMACION1REC\Proyecto_Buscamina\images\bomb-at-clicked-block.png")
     imagen_bandera_mina = pygame.image.load(r"PROGRAMACION1REC\Proyecto_Buscamina\images\flag.png")
     imagen_vacia = pygame.image.load(r"PROGRAMACION1REC\Proyecto_Buscamina\images\empty-block.png")
-    
 
+    return imagenes_numeros, imagen_mina, imagen_mina_explotada, imagen_bandera_mina, imagen_vacia
+
+
+def dibujar_celda(pantalla, x, y, tam_casilla, tipo, imagenes, numero=None):
+    imagenes_numeros, imagen_mina, imagen_mina_explotada, imagen_bandera_mina, imagen_vacia = imagenes
+
+    if tipo == "mina_explotada":
+        pantalla.blit(imagen_mina_explotada, (x, y))
+    elif tipo == "bandera":
+        imagen_bandera = pygame.transform.scale(imagen_bandera_mina, (tam_casilla, tam_casilla))
+        pantalla.blit(imagen_bandera, (x, y))
+    elif tipo == "numero" and numero:
+        imagen_numero = imagenes_numeros.get(numero)
+        if imagen_numero:
+            imagen_redimensionada = pygame.transform.scale(imagen_numero, (tam_casilla, tam_casilla))
+            pantalla.blit(imagen_redimensionada, (x, y))
+    elif tipo == "vacia":
+        imagen_vacia_redimensionada = pygame.transform.scale(imagen_vacia, (tam_casilla, tam_casilla))
+        pantalla.blit(imagen_vacia_redimensionada, (x, y))
+    elif tipo == "oculta":
+        pygame.draw.rect(pantalla, (100, 100, 100), (x, y, tam_casilla, tam_casilla))
+        pygame.draw.rect(pantalla, (150, 150, 150), (x, y, tam_casilla, tam_casilla), 2)
+
+
+def manejar_celda_fin_juego(pantalla, fila, columna, x, y, tam_casilla, matriz, banderas, descubiertas, imagenes):
+    if matriz[fila][columna] == -1:  # Mina
+        if banderas[fila][columna]:
+            dibujar_celda(pantalla, x, y, tam_casilla, "bandera", imagenes)
+        else:
+            dibujar_celda(pantalla, x, y, tam_casilla, "mina_explotada", imagenes)
+    elif descubiertas[fila][columna]:
+        if matriz[fila][columna] == 0:
+            dibujar_celda(pantalla, x, y, tam_casilla, "vacia", imagenes)
+        else:
+            dibujar_celda(pantalla, x, y, tam_casilla, "numero", imagenes, matriz[fila][columna])
+
+
+def manejar_celda_juego_normal(pantalla, fila, columna, x, y, tam_casilla, matriz, banderas, descubiertas, imagenes):
+    if descubiertas[fila][columna]:
+        if matriz[fila][columna] == 0:
+            dibujar_celda(pantalla, x, y, tam_casilla, "vacia", imagenes)
+        else:
+            dibujar_celda(pantalla, x, y, tam_casilla, "numero", imagenes, matriz[fila][columna])
+    else:
+        dibujar_celda(pantalla, x, y, tam_casilla, "oculta", imagenes)
+        if banderas[fila][columna]:
+            dibujar_celda(pantalla, x, y, tam_casilla, "bandera", imagenes)
+
+
+def dibujar_tablero(matriz, descubiertas, banderas, pantalla, tam_casilla):
+    imagenes = cargar_imagenes()
     filas, columnas = len(matriz), len(matriz[0])
 
     for fila in range(filas):
         for columna in range(columnas):
             x = columna * tam_casilla
-            y = fila * tam_casilla + 100  # Desplazar 100 píxeles hacia abajo para evitar el área del puntaje
+            y = fila * tam_casilla + 100  # Ajustar para el área de puntaje
 
-            # Si el juego ha terminado, mostrar las minas
-            if fin_juego:
-                if matriz[fila][columna] == -1:  # Mina
-                    if banderas[fila][columna]:  # Si hay una bandera sobre la mina
-                        pantalla.blit(imagen_bandera_mina, (x, y))
-                    else:  # Mostrar la mina explotada si se pierde
-                        pantalla.blit(imagen_mina_explotada, (x, y))
-                else:
-                    # Si no es una mina, y está descubierta, mostrar las celdas vacías o los números
-                    if descubiertas[fila][columna]:
-                        if matriz[fila][columna] == 0:
-                            imagen_vacia_redimensionada = pygame.transform.scale(imagen_vacia, (tam_casilla, tam_casilla))
-                            pantalla.blit(imagen_vacia_redimensionada, (x, y))
-                        elif matriz[fila][columna] > 0:
-                            imagen_numero = imagenes_numeros.get(matriz[fila][columna])
-                            if imagen_numero:
-                                imagen_redimensionada = pygame.transform.scale(imagen_numero, (tam_casilla, tam_casilla))
-                                pantalla.blit(imagen_redimensionada, (x, y))
-                    else:
-                        # Si la celda está oculta y no es una mina, mostrar las casillas no descubiertas
-                        pygame.draw.rect(pantalla, (100, 100, 100), (x, y, tam_casilla, tam_casilla))
-                        pygame.draw.rect(pantalla, (150, 150, 150), (x, y, tam_casilla, tam_casilla), 2)
-                        # Dibujar la bandera si está marcada
-                        if banderas[fila][columna]:
-                            bandera_redimensionada = pygame.transform.scale(imagen_bandera_mina, (tam_casilla, tam_casilla))
-                            pantalla.blit(bandera_redimensionada, (x, y))
-            else:
-                # Normalmente dibujar el tablero en el juego
-                if descubiertas[fila][columna]:
-                    pygame.draw.rect(pantalla, (200, 200, 200), (x, y, tam_casilla, tam_casilla))
-                    pygame.draw.rect(pantalla, (150, 150, 150), (x, y, tam_casilla, tam_casilla), 2)
+            if fin_juego:  # Fin del juego
+                manejar_celda_fin_juego(pantalla, fila, columna, x, y, tam_casilla, matriz, banderas, descubiertas, imagenes)
+            else:  # Durante el juego
+                manejar_celda_juego_normal(pantalla, fila, columna, x, y, tam_casilla, matriz, banderas, descubiertas, imagenes)
 
-                    # Mostrar número o imagen de celda vacía
-                    if matriz[fila][columna] == 0:
-                        imagen_vacia_redimensionada = pygame.transform.scale(imagen_vacia, (tam_casilla, tam_casilla))
-                        pantalla.blit(imagen_vacia_redimensionada, (x, y))
-                    elif matriz[fila][columna] > 0:
-                        imagen_numero = imagenes_numeros.get(matriz[fila][columna])
-                        if imagen_numero:
-                            imagen_redimensionada = pygame.transform.scale(imagen_numero, (tam_casilla, tam_casilla))
-                            pantalla.blit(imagen_redimensionada, (x, y))
-                else:
-                    # Dibujar celda oculta y bandera
-                    pygame.draw.rect(pantalla, (100, 100, 100), (x, y, tam_casilla, tam_casilla))
-                    pygame.draw.rect(pantalla, (150, 150, 150), (x, y, tam_casilla, tam_casilla), 2)
-                    if banderas[fila][columna]:
-                        bandera_redimensionada = pygame.transform.scale(imagen_bandera_mina, (tam_casilla, tam_casilla))
-                        pantalla.blit(bandera_redimensionada, (x, y))
 
 
 #Menu y Bucle principal
@@ -447,7 +452,6 @@ def menu_principal():
     Returns:
     None
     """
-    global idioma #que use la variable que está fuera de la función en lugar de crear una nueva dentro de la función.
 
     # Reproducir música de fondo
     sonido_fondo.play(loops=-1)
@@ -458,7 +462,7 @@ def menu_principal():
         dibujar_texto(pantalla, "BUSCAMINAS", 48, POSICION_TITULO[0], POSICION_TITULO[1])
 
         # Dibujar botones
-        dibujar_boton("Nivel", ANCHO / 2 - ANCHO_BOTON / 2, INICIO_BOTON_Y - ESPACIADO_BOTON, ANCHO_BOTON, ALTO_BOTON, NEGRO, (200, 200, 200), seleccionar_nivel)
+
         dibujar_boton("Jugar", ANCHO / 2 - ANCHO_BOTON / 2, INICIO_BOTON_Y, ANCHO_BOTON, ALTO_BOTON, NEGRO, (200, 200, 200), iniciar_juego)
         dibujar_boton("Ver Puntajes", ANCHO / 2 - ANCHO_BOTON / 2, INICIO_BOTON_Y + ESPACIADO_BOTON, ANCHO_BOTON, ALTO_BOTON, NEGRO, (200, 200, 200), mostrar_ranking)
         dibujar_boton("Salir", ANCHO / 2 - ANCHO_BOTON / 2, INICIO_BOTON_Y + 2 * ESPACIADO_BOTON, ANCHO_BOTON, ALTO_BOTON, NEGRO, (200, 200, 200), pygame.quit)
@@ -519,6 +523,58 @@ def ajustar_tamano_casilla(filas, columnas):
     return tam_casilla
 
 def juego_principal():
+
+    """Inicia una nueva partida del Buscaminas."""
+    filas, columnas, num_minas = seleccionar_nivel()
+
+    # Inicializar el estado del juego
+    matriz = crear_matriz_buscamina(filas, columnas, num_minas)
+    descubiertas = [[False for _ in range(columnas)] for _ in range(filas)]
+    banderas = [[False for _ in range(columnas)] for _ in range(filas)]
+    puntaje = 0
+    fin_juego = False
+    tam_casilla = ajustar_tamano_casilla(filas, columnas)
+
+    while not fin_juego:  # Bucle de la partida
+        pantalla.blit(imagen_fondo, (0, 0))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                columna = x // tam_casilla
+                fila = (y - 100) // tam_casilla
+
+                if 0 <= fila < filas and 0 <= columna < columnas:
+                    if event.button == 1:  # Clic izquierdo
+                        if not banderas[fila][columna]:  # No se puede descubrir si hay una bandera
+                            if matriz[fila][columna] == -1:  # Si encuentra una mina
+                                print("¡Boom! Has encontrado una mina. Has perdido la partida.")
+                                fin_juego = True
+                            else:
+                                descubrir_vacias(fila, columna, matriz, descubiertas, filas, columnas)
+                                puntaje += 1
+                    elif event.button == 3:  # Clic derecho
+                        banderas[fila][columna] = not banderas[fila][columna]
+
+        # Dibujar el tablero con imágenes y números
+        dibujar_tablero(matriz, descubiertas, banderas, pantalla, tam_casilla)
+
+        # Mostrar el puntaje
+        texto_puntaje = fuente.render(f"Puntaje: {puntaje:04d}", True, COLOR_TEXTO)
+        pantalla.blit(texto_puntaje, (20, 20))
+
+        pygame.display.flip()
+
+    # Mostrar mensaje de fin de partida antes de regresar al menú
+    pygame.time.wait(1000)
+    menu_principal()  # Regresar al menú principal
+
+
+"""def juego_principal():
     global matriz, descubiertas, banderas, puntaje
 
     filas, columnas, num_minas = seleccionar_nivel()
@@ -575,9 +631,7 @@ def juego_principal():
             pygame.time.wait(1000)
             juego_principal()
 
-        pygame.display.flip()
-
-
+        pygame.display.flip()"""
 
 # Iniciar el juego
 menu_principal()
