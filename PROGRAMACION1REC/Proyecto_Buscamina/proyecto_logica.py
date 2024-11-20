@@ -422,22 +422,54 @@ def dibujar_tablero(matriz, descubiertas, banderas, pantalla, tam_casilla):
 
 #Menu y Bucle principal
 
+"""def iniciar_juego():
+    
+    Inicia un nuevo juego de Buscaminas.
+
+    Esta función reinicia las variables del juego y llama a la función `juego_principal()`.
+    
+    global matriz, descubiertas, banderas, puntaje  # Que use las variables que están fuera de la función en lugar de crear nuevas dentro de la función.
+
+    # Reiniciar variables del juego
+    filas = seleccionar_nivel()[0]
+    columnas = seleccionar_nivel()[1]
+    num_minas = seleccionar_nivel() [2]
+
+    matriz = crear_matriz_buscamina(filas, columnas, num_minas)  # Generar una nueva matriz con minas distribuidas aleatoriamente
+    descubiertas = [[False for _ in range(8)] for _ in range(8)]  # Reiniciar el estado de las casillas descubiertas
+    banderas = [[False for _ in range(8)] for _ in range(8)]  # Reiniciar el estado de las banderas
+    puntaje = 0  # Reiniciar el puntaje a 0000
+
+    juego_principal()  # Llamar a la función que maneja el bucle principal del juego"""
+
 def iniciar_juego():
     """
     Inicia un nuevo juego de Buscaminas.
 
     Esta función reinicia las variables del juego y llama a la función `juego_principal()`.
     """
-    global matriz, descubiertas, banderas, puntaje  # Que use las variables que están fuera de la función en lugar de crear nuevas dentro de la función.
+    # Crear un diccionario para almacenar las variables del estado del juego
+    estado_juego = {
+        'matriz': [],
+        'descubiertas': [],
+        'banderas': [],
+        'puntaje': 0
+    }
 
     # Reiniciar variables del juego
-    filas, columnas, num_minas = seleccionar_nivel() 
-    matriz = crear_matriz_buscamina(filas, columnas, num_minas)  # Generar una nueva matriz con minas distribuidas aleatoriamente
-    descubiertas = [[False for _ in range(8)] for _ in range(8)]  # Reiniciar el estado de las casillas descubiertas
-    banderas = [[False for _ in range(8)] for _ in range(8)]  # Reiniciar el estado de las banderas
-    puntaje = 0  # Reiniciar el puntaje a 0000
+    filas = seleccionar_nivel()[0]
+    columnas = seleccionar_nivel()[1]
+    num_minas = seleccionar_nivel()[2]
+    
+    estado_juego['matriz'] = crear_matriz_buscamina(filas, columnas, num_minas)  # Generar una nueva matriz con minas distribuidas aleatoriamente
+    estado_juego['descubiertas'] = [[False for _ in range(8)] for _ in range(8)]  # Reiniciar el estado de las casillas descubiertas
+    estado_juego['banderas'] = [[False for _ in range(8)] for _ in range(8)]  # Reiniciar el estado de las banderas
+    estado_juego['puntaje'] = 0  # Reiniciar el puntaje a 0000
 
     juego_principal()  # Llamar a la función que maneja el bucle principal del juego
+
+    # Si necesitas acceder a las variables actualizadas después de llamar a juego_principal, puedes retornarlas
+    return estado_juego
 
 
 def menu_principal():
@@ -525,7 +557,9 @@ def ajustar_tamano_casilla(filas, columnas):
 def juego_principal():
 
     """Inicia una nueva partida del Buscaminas."""
-    filas, columnas, num_minas = seleccionar_nivel()
+    filas = seleccionar_nivel()[0]
+    columnas = seleccionar_nivel()[1]
+    num_minas = seleccionar_nivel() [2]
 
     # Inicializar el estado del juego
     matriz = crear_matriz_buscamina(filas, columnas, num_minas)
