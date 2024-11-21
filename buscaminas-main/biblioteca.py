@@ -167,6 +167,8 @@ def dibujar_boton(texto, x, y, ancho, alto, color_inactivo, color_activo, accion
 
 def seleccionar_nivel():
     nivel_seleccionado = False
+    resultado = None  # Variable auxiliar para almacenar el resultado
+
     while not nivel_seleccionado:  # Se repite hasta que se seleccione un nivel
         pantalla.blit(imagen_fondo, (0, 0))
         boton_facil = dibujar_boton("Facil", ANCHO / 2 - ANCHO_BOTON / 2, INICIO_BOTON_Y - ESPACIADO_BOTON, ANCHO_BOTON, ALTO_BOTON, NEGRO, (200, 200, 200))
@@ -179,16 +181,19 @@ def seleccionar_nivel():
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:  # Detecta clic inicial
                 if boton_facil.collidepoint(event.pos):
+                    resultado = (8, 8, 10)  # Fácil: 8x8 con 10 minas
                     nivel_seleccionado = True
-                    return (8, 8, 10)  # Fácil: 8x8 con 10 minas
                 elif boton_medio.collidepoint(event.pos):
+                    resultado = (16, 16, 40)  # Medio: 16x16 con 40 minas
                     nivel_seleccionado = True
-                    return (16, 16, 40)  # Medio: 16x16 con 40 minas
                 elif boton_dificil.collidepoint(event.pos):
+                    resultado = (16, 30, 100)  # Difícil: 16x30 con 100 minas
                     nivel_seleccionado = True
-                    return (16, 30, 100)  # Difícil: 16x30 con 100 minas
 
         pygame.display.flip()
+    
+    # Ahora, fuera del bucle, retornamos el valor almacenado en 'resultado'
+    return resultado
   
 #configuracion de sonido
 
@@ -271,7 +276,7 @@ def manejar_celda_juego_normal(pantalla, fila, columna, x, y, tam_casilla, matri
         if banderas[fila][columna]:
             dibujar_celda(pantalla, x, y, tam_casilla, "bandera", imagenes)
 
-def dibujar_tablero(matriz, descubiertas, banderas, pantalla, fuente, tam_casilla):
+def dibujar_tablero(matriz, descubiertas, banderas, pantalla, tam_casilla):
     imagenes = cargar_imagenes()
     filas, columnas = len(matriz), len(matriz[0])
 
@@ -467,7 +472,7 @@ def juego_principal():
                 contador_texto = fuente.render(f"Time: {contador_segundos}", True, "red")
                     
         # Dibujar el tablero con imágenes y números
-        dibujar_tablero(matriz, descubiertas, banderas, pantalla, fuente, tam_casilla)
+        dibujar_tablero(matriz, descubiertas, banderas, pantalla, tam_casilla)
 
         # Mostrar el puntaje
         texto_puntaje = fuente.render(f"Puntaje: {puntaje:04d}", True, COLOR_TEXTO)
