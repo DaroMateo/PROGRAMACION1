@@ -8,7 +8,7 @@ ANCHO = 800
 ALTO = 800
 BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
-NOMBRE_FUENTE = pygame.font.match_font("Arial Narrow")
+NOMBRE_FUENTE = pygame.font.match_font("Pixeled.ttf")
 ARCHIVO_PUNTAJES = "puntajesbuscamina.json"
 # SONIDO_PALABRA_DESCUBIERTA = pygame.mixer.Sound("coin_mario.mp3")
 # SONIDO_FIN_JUEGO = pygame.mixer.Sound("game_over.mp3")
@@ -223,7 +223,6 @@ def swap(lista: list, indice_uno: int, indice_dos: int) -> list:
     lista[indice_dos] = auxiliar
 
     return lista  
-
 
 def ordenar(lista: list, clave: str, ascendente: bool = True) -> list: 
     """
