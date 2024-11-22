@@ -70,7 +70,6 @@ def crear_matriz_en_0(filas, columnas):
         matriz.append(fila)  # Agregar la fila a la matriz
     return matriz
 
-
 def crear_matriz_buscamina(filas, columnas, num_minas):
     matriz = crear_matriz_en_0(filas, columnas)
     minas_colocadas = 0
@@ -162,9 +161,7 @@ def dibujar_boton(texto, x, y, ancho, alto, color_inactivo, color_activo, accion
 
     return rect_boton  # Retornar el rectángulo del botón
 
-
 #Configuracion de niveles
-
 def seleccionar_nivel():
     nivel_seleccionado = False
     resultado = None  # Variable auxiliar para almacenar el resultado
@@ -194,9 +191,8 @@ def seleccionar_nivel():
     
     # Ahora, fuera del bucle, retornamos el valor almacenado en 'resultado'
     return resultado
-  
-#configuracion de sonido
 
+#configuracion de sonido
 def alternar_sonido(silencio, sonido_fondo):
     nuevo_silencio = not silencio
     if nuevo_silencio:
@@ -206,7 +202,6 @@ def alternar_sonido(silencio, sonido_fondo):
     return nuevo_silencio
 
 #Dibujar tablero
-
 def cargar_imagenes():
     imagenes_numeros = {
         
@@ -231,7 +226,6 @@ def cargar_imagenes():
 
 # AGREGUE EL imagen_bandera_erronea
     return imagenes_numeros, imagen_mina, imagen_mina_explotada, imagen_bandera_mina, imagen_vacia, imagen_bandera_erronea
-
 
 def dibujar_celda(pantalla, x, y, tam_casilla, tipo, imagenes, numero=None):
     imagenes_numeros, imagen_mina, imagen_mina_explotada, imagen_bandera_mina, imagen_vacia, imagen_bandera_erronea = imagenes
@@ -334,12 +328,12 @@ def ajustar_tamano_casilla(filas, columnas):
 
     return tam_casilla
 
-def iniciar_juego():
-    """
+"""def iniciar_juego():
+    
     Inicia un nuevo juego de Buscaminas.
 
     Esta función reinicia las variables del juego y llama a la función `juego_principal()`.
-    """
+    
     # Crear un diccionario para almacenar las variables del estado del juego
     estado_juego = {
         'matriz': [],
@@ -362,10 +356,10 @@ def iniciar_juego():
 
     # Si necesitas acceder a las variables actualizadas después de llamar a juego_principal, puedes retornarlas
     return estado_juego
+"""
 
-
-def menu_principal():
-    """
+"""def menu_principal():
+    
     Muestra el menú principal del juego y permite al jugador seleccionar opciones como iniciar un nuevo juego, ver el marcador o salir del juego.
 
     Esta función inicializa las variables globales del juego e inicia el bucle del juego. Actualiza continuamente la pantalla con la imagen de fondo del juego y muestra el título del juego. También dibuja botones para iniciar un nuevo juego, ver el marcador y salir del juego. Además, dibuja un ícono para activar o desactivar el sonido del juego.
@@ -375,7 +369,7 @@ def menu_principal():
 
     Returns:
     None
-    """
+    
 
     # Reproducir música de fondo
     sonido_fondo.play(loops=-1)
@@ -408,81 +402,145 @@ def menu_principal():
             elif event.type == pygame.MOUSEBUTTONDOWN: # Manejo de eventos de click del ratón (Click, teclado, etc.)
                 if posicion_icono[0] < event.pos[0] < posicion_icono[0] + tamano_icono and posicion_icono[1] < event.pos[1] < posicion_icono[1] + tamano_icono: # Verificar si el click se encuentra dentro del ícono de sonido (activado o desactivado) y cambiar el estado del silencio a su opuesto 
                     silencio = alternar_sonido(silencio, sonido_fondo)  # Alternar sonido cuando se hace clic en el ícono de sonido
-                    
+ """                   
+
+def manejar_evento(fila, columna, filas, columnas, event, matriz, banderas, descubiertas, puntaje, SONIDO_FIN_JUEGO, SONIDO_CELDA_DESCUBIERTA):
+    """
+    Maneja un evento de clic en el juego Buscaminas.
     
+    :param fila: Fila del clic.
+    :param columna: Columna del clic.
+    :param filas: Número total de filas.
+    :param columnas: Número total de columnas.
+    :param event: Evento de clic recibido.
+    :param matriz: Matriz del juego.
+    :param banderas: Matriz que indica si hay una bandera en una celda.
+    :param descubiertas: Matriz que indica si una celda ya está descubierta.
+    :param puntaje: Puntuación actual.
+    :param SONIDO_FIN_JUEGO: Sonido que se reproduce al perder.
+    :param SONIDO_CELDA_DESCUBIERTA: Sonido que se reproduce al descubrir una celda.
+    :return: Actualización del puntaje y estado de fin de juego.
+    """
+    resultado = {
+        "puntaje": puntaje,
+        "fin_juego": False
+    }
+    
+    if 0 <= fila < filas and 0 <= columna < columnas:
+        if event.button == 1:  # Clic izquierdo
+            if not banderas[fila][columna]:  # No se puede descubrir si hay una bandera
+                if matriz[fila][columna] == -1:  # Si encuentra una mina
+                    # --------------------------------------------
+                    for i in range(len(matriz)):
+                        for j in range(len(matriz[0])):
+                            if matriz[i][j] == -1:
+                                descubiertas[i][j] = True
+                    SONIDO_FIN_JUEGO.play()
+                    # --------------------------------------------
+                    print("¡Boom! Has encontrado una mina. Has perdido la partida.")
+                    resultado["fin_juego"] = True
+                else:
+                    if not descubiertas[fila][columna]:
+                        SONIDO_CELDA_DESCUBIERTA.play()
+                        resultado["puntaje"] += 1
+                    descubrir_vacias(fila, columna, matriz, descubiertas, filas, columnas)
+    return resultado
                                  
+def boton_presionado(nombre_boton, posicion_clic):
+    """
+    Verifica si el clic ocurrió dentro de las coordenadas de un botón.
+
+    :param nombre_boton: El texto o nombre del botón que se está verificando.
+    :param posicion_clic: Tupla (x, y) que indica la posición del clic.
+    :return: True si el clic ocurrió dentro del botón, False en caso contrario.
+    """
+    # Inicializar presionado como False
+    presionado = False
+    
+    # Obtener las coordenadas y dimensiones del botón según su nombre
+    if nombre_boton == "Jugar":
+        x = ANCHO / 2 - ANCHO_BOTON / 2
+        y = INICIO_BOTON_Y
+    elif nombre_boton == "Ver Puntajes":
+        x = ANCHO / 2 - ANCHO_BOTON / 2
+        y = INICIO_BOTON_Y + ESPACIADO_BOTON
+    elif nombre_boton == "Salir":
+        x = ANCHO / 2 - ANCHO_BOTON / 2
+        y = INICIO_BOTON_Y + 2 * ESPACIADO_BOTON
+    else:
+        return presionado  # Si el botón no existe, regresamos el valor actual de presionado (que es False)
+
+    # Dimensiones del botón
+    ancho = ANCHO_BOTON
+    alto = ALTO_BOTON
+
+    # Posición del clic
+    clic_x, clic_y = posicion_clic
+
+    # Verificar si el clic está dentro del área del botón
+    if x <= clic_x <= x + ancho and y <= clic_y <= y + alto:
+        presionado = True
+    
+    # Retornar el valor final de 'presionado'
+    return presionado
                     
-def juego_principal():
+"""def juego_principal():
+    
+    Inicia una nueva partida del Buscaminas y maneja el bucle principal del juego.
+    
     SONIDO_CELDA_DESCUBIERTA = pygame.mixer.Sound("buscaminas-main/coin_mario-[AudioTrimmer.com].mp3")
     SONIDO_FIN_JUEGO = pygame.mixer.Sound("buscaminas-main/game_over.mp3")
-    """Inicia una nueva partida del Buscaminas."""
-    filas = seleccionar_nivel()[0]
-    columnas = seleccionar_nivel()[1]
-    num_minas = seleccionar_nivel()[2]
 
-    # Inicializar el estado del juego
+    # Seleccionar nivel y configurar variables del juego
+    filas, columnas, num_minas = seleccionar_nivel()
     matriz = crear_matriz_buscamina(filas, columnas, num_minas)
     descubiertas = crear_matriz(filas, columnas, False)
-    banderas = crear_matriz(filas, columnas, False) 
+    banderas = crear_matriz(filas, columnas, False)
     puntaje = 0
     fin_juego = False
     tam_casilla = ajustar_tamano_casilla(filas, columnas)
-    evento_contador = pygame.USEREVENT + 1 
-    un_segundo = 1000 # 1000 milisegundos = 1 segundo
+    evento_contador = pygame.USEREVENT + 1
+    un_segundo = 1000  # Milisegundos
     pygame.time.set_timer(evento_contador, un_segundo)
     contador_segundos = 0
     contador_texto = fuente.render(f"Time: {contador_segundos}", True, "red")
 
-    while not fin_juego:  # Bucle de la partida
+    # Bucle principal del juego
+    while not fin_juego:
         pantalla.blit(imagen_fondo, (0, 0))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = event.pos
+                pos = event.pos
+                x, y = pos
                 columna = x // tam_casilla
                 fila = (y - 100) // tam_casilla
 
                 if 0 <= fila < filas and 0 <= columna < columnas:
                     if event.button == 1:  # Clic izquierdo
-                        if not banderas[fila][columna]:  # No se puede descubrir si hay una bandera
-                            if matriz[fila][columna] == -1:  # Si encuentra una mina
-                                #--------------------------------------------
-                                for i in range(len(matriz)):
-                                    for j in range(len(matriz[0])):
-                                        if matriz[i][j] == -1:
-                                            descubiertas[i][j] = True
-                                SONIDO_FIN_JUEGO.play()
-                                #--------------------------------------------                          
-                                print("¡Boom! Has encontrado una mina. Has perdido la partida.")
-                                fin_juego = True
-                            else:
-                                if descubiertas[fila][columna] == False:
-                                    SONIDO_CELDA_DESCUBIERTA.play()
-                                    puntaje += 1
-                                descubrir_vacias(fila, columna, matriz, descubiertas, filas, columnas)
-                                
+                        resultado = manejar_evento(fila, columna, filas, columnas, event, matriz, banderas, descubiertas, puntaje, SONIDO_FIN_JUEGO, SONIDO_CELDA_DESCUBIERTA)
+                        puntaje = resultado["puntaje"]
+                        fin_juego = resultado["fin_juego"]
                     elif event.button == 3:  # Clic derecho
                         banderas[fila][columna] = not banderas[fila][columna]
+
             if event.type == evento_contador:
                 contador_segundos += 1
                 contador_texto = fuente.render(f"Time: {contador_segundos}", True, "red")
-                    
-        # Dibujar el tablero con imágenes y números
-        dibujar_tablero(matriz, descubiertas, banderas, pantalla, tam_casilla)
 
-        # Mostrar el puntaje
+        # Dibujar el tablero y los indicadores
+        dibujar_tablero(matriz, descubiertas, banderas, pantalla, tam_casilla)
         texto_puntaje = fuente.render(f"Puntaje: {puntaje:04d}", True, COLOR_TEXTO)
         pantalla.blit(texto_puntaje, (20, 20))
         pantalla.blit(contador_texto, (700, 20))
 
         pygame.display.flip()
 
-    # Mostrar mensaje de fin de partida antes de regresar al menú
-    pygame.time.wait(5000)
+    # Mensaje de fin de partida
+    pygame.time.wait(5000)"""
     
 def salir():
     pygame.quit()
