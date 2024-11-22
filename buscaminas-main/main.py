@@ -6,6 +6,26 @@ sonido_fondo.play(loops=-1)
 silencio = False
 ejecutando = True
 
+# Inicialización general (antes del bucle principal)
+SONIDO_CELDA_DESCUBIERTA = pygame.mixer.Sound("buscaminas-main/coin_mario-[AudioTrimmer.com].mp3")
+SONIDO_FIN_JUEGO = pygame.mixer.Sound("buscaminas-main/game_over.mp3")
+evento_contador = pygame.USEREVENT + 1
+un_segundo = 1000
+pygame.time.set_timer(evento_contador, un_segundo)
+
+# Variables reutilizables
+filas = 0
+columnas = 0
+num_minas = 0
+matriz = None
+descubiertas = None
+banderas = None  
+tam_casilla = 0
+puntaje = 0
+fin_juego = False
+contador_segundos = 0
+contador_texto = None
+
 while ejecutando:
     # Menú principal
     en_menu = True
@@ -42,11 +62,7 @@ while ejecutando:
                     pygame.quit()
                     sys.exit()
 
-    # Juego principal
-    SONIDO_CELDA_DESCUBIERTA = pygame.mixer.Sound("buscaminas-main/coin_mario-[AudioTrimmer.com].mp3")
-    SONIDO_FIN_JUEGO = pygame.mixer.Sound("buscaminas-main/game_over.mp3")
-
-    # Configuración del juego
+    # Configuración específica del juego (reiniciar solo las variables necesarias)
     filas, columnas, num_minas = seleccionar_nivel()
     matriz = crear_matriz_buscamina(filas, columnas, num_minas)
     descubiertas = crear_matriz(filas, columnas, False)
@@ -54,12 +70,10 @@ while ejecutando:
     puntaje = 0
     fin_juego = False
     tam_casilla = ajustar_tamano_casilla(filas, columnas)
-    evento_contador = pygame.USEREVENT + 1
-    un_segundo = 1000
-    pygame.time.set_timer(evento_contador, un_segundo)
     contador_segundos = 0
     contador_texto = fuente.render(f"Time: {contador_segundos}", True, "red")
 
+    # Bucle principal del juego
     while not fin_juego:
         pantalla.blit(imagen_fondo, (0, 0))
 
@@ -69,7 +83,8 @@ while ejecutando:
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos = event.pos
-                x, y = pos
+                x = pos[0]
+                y = pos[1]
                 columna = x // tam_casilla
                 fila = (y - 100) // tam_casilla
 
@@ -83,7 +98,11 @@ while ejecutando:
 
             if event.type == evento_contador:
                 contador_segundos += 1
-                contador_texto = fuente.render(f"Time: {contador_segundos}", True, "red")
+
+                minutos = contador_segundos // 60
+                segundos = contador_segundos % 60
+
+                contador_texto = fuente.render(f"Time: {minutos}:{segundos:02d}", True, "red")
 
         # Dibujar el tablero y los indicadores
         dibujar_tablero(matriz, descubiertas, banderas, pantalla, tam_casilla)
@@ -95,4 +114,5 @@ while ejecutando:
 
     # Fin de juego y volver al menú
     pygame.time.wait(5000)
+
 
