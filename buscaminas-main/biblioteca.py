@@ -1,4 +1,4 @@
-import pygame, random, sys, json
+import pygame, random, sys, json, os
 # Constantes
 
 pygame.init()
@@ -9,7 +9,9 @@ ALTO = 800
 BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
 NOMBRE_FUENTE = pygame.font.SysFont("Pixeled.ttf", 20, bold=True)
-ARCHIVO_PUNTAJES = "buscaminas-main/puntajebuscaminas.json"
+ARCHIVO_PUNTAJES = "puntajesbuscamina.json"
+reloj = pygame.time.Clock()
+
 
 # Colores
 COLOR_BOTON = (0, 200, 0)
@@ -214,11 +216,26 @@ def cargar_puntajes(archivo_puntajes):
     Returns:
         list: Lista de diccionarios que representan las puntuaciones más altas.
     """
+    # Paso 1: Leer el archivo usando `leer_archivo`
     datos = leer_archivo(archivo_puntajes)
-    puntajes = datos.get("puntajes", [])  # Obtiene los puntajes o una lista vacía
-    return puntajes
     
+    # Paso 2: Validar si el archivo fue leído correctamente
+    if datos is None:
+        print(f"Advertencia: El archivo '{archivo_puntajes}' no pudo ser leído.")
+        return []
+    
+    # Paso 3: Validar el tipo de los datos cargados
+    if isinstance(datos, dict):
+        # Si es un diccionario, busca la clave "puntajes"
+        return datos.get("puntajes", [])
+    elif isinstance(datos, list):
+        # Si ya es una lista, retorna directamente
+        return datos
+    
+    # Paso 4: Caso de formato inesperado
+    print(f"Advertencia: El archivo '{archivo_puntajes}' tiene un formato inesperado.")
     return []
+    
 # Función para mostrar ranking
 def mostrar_ranking(pantalla, archivo_puntajes, imagen_fondo, ancho, alto):
     """
@@ -450,16 +467,39 @@ def descubrir_vacias(fila, columna, matriz, descubiertas, filas, columnas):
                     if 0 <= i < filas and 0 <= j < columnas and not descubiertas[i][j]:
                         celdas_por_descubrir.append((i, j))
 
+# def ajustar_tamano_casilla(filas, columnas):
+#     pantalla_ancho, pantalla_alto = pantalla.get_size()  # Obtener tamaño de la pantalla
+#     # Ajustar el tamaño de las celdas para que el tablero entre en la pantalla
+#     espacio_ancho = pantalla_ancho - 100  # 100px de margen
+#     espacio_alto = pantalla_alto - 200  # 200px de margen (ajusta según sea necesario)
+
+#     tam_casilla_ancho = espacio_ancho // columnas
+#     tam_casilla_alto = espacio_alto // filas
+
+#     # Elegir el tamaño mínimo entre ancho y alto para que encaje correctamente
+#     tam_casilla = min(tam_casilla_ancho, tam_casilla_alto)
+
+#     # Asegurarse de que el tamaño de la celda no sea demasiado pequeño
+#     tam_casilla = max(tam_casilla, 30)
+
+#     return tam_casilla
+
 def ajustar_tamano_casilla(filas, columnas):
     pantalla_ancho, pantalla_alto = pantalla.get_size()  # Obtener tamaño de la pantalla
-    # Ajustar el tamaño de las celdas para que el tablero entre en la pantalla
-    espacio_ancho = pantalla_ancho - 100  # 100px de margen
-    espacio_alto = pantalla_alto - 200  # 200px de margen (ajusta según sea necesario)
 
+    # Definir márgenes
+    margen_x = 100  # Margen horizontal (izquierda y derecha)
+    margen_y = 200  # Margen vertical (arriba y abajo)
+
+    # Calcular espacio disponible para el tablero
+    espacio_ancho = pantalla_ancho - margen_x  # Espacio para el tablero a lo largo del eje X
+    espacio_alto = pantalla_alto - margen_y    # Espacio para el tablero a lo largo del eje Y
+
+    # Calcular el tamaño máximo de las celdas
     tam_casilla_ancho = espacio_ancho // columnas
     tam_casilla_alto = espacio_alto // filas
 
-    # Elegir el tamaño mínimo entre ancho y alto para que encaje correctamente
+    # Elegir el tamaño mínimo entre el tamaño calculado por el ancho y el alto para asegurar que el tablero encaje
     tam_casilla = min(tam_casilla_ancho, tam_casilla_alto)
 
     # Asegurarse de que el tamaño de la celda no sea demasiado pequeño
@@ -684,3 +724,55 @@ def boton_presionado(nombre_boton, posicion_clic):
 def salir():
     pygame.quit()
     sys.exit()
+
+def reiniciar(filas, columnas, num_minas):
+    matriz = crear_matriz_buscamina(filas, columnas, num_minas) # Reiniciar la matriz
+    descubiertas = crear_matriz(filas, columnas, False)  # Reiniciar el estado de las casillas descubiertas
+    banderas = crear_matriz(filas, columnas, False)  # Reiniciar el estado de las banderas
+    puntaje = 0
+    return matriz, descubiertas, banderas, puntaje
+
+def guardar_puntaje(nick, puntaje, archivo="puntajes.json"):
+    datos = []
+    if os.path.isfile(archivo):  # Verificar si el archivo existe
+        with open(archivo, "r") as f:
+            datos = json.load(f)
+    datos.append({"nick": nick, "puntaje": puntaje})
+    with open(archivo, "w") as f:
+        json.dump(datos, f, indent=4)
+
+# Pantalla para pedir el nombre (nick)
+def pedir_nick():
+    nick = ""
+    ingresando = True
+    while ingresando:
+        for evento in pygame.event.get():
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_RETURN:  # Confirmar con Enter
+                    ingresando = False
+                elif evento.key == pygame.K_BACKSPACE:  # Borrar un carácter
+                    nick = nick[:-1]
+                else:
+                    nick += evento.unicode  # Agregar el carácter ingresado
+
+        # Dibujar pantalla de entrada
+        pantalla.blit(imagen_fondo, (0, 0))
+        texto = fuente.render("Ingresa tu Nick (Enter para confirmar):", True, ("white"))
+        texto_nick = fuente.render(nick, True, ("white"))
+        rect_x = ANCHO // 2 - texto.get_width() // 2 - 10
+        rect_y = ALTO // 3 - 10
+        rect_ancho = texto.get_width() + 20
+        rect_alto = texto.get_height() + 200
+
+        # Dibujar el rectángulo debajo del texto (color gris)
+        pygame.draw.rect(pantalla, ("black"), (rect_x, rect_y, rect_ancho, rect_alto))
+        pantalla.blit(texto, (ANCHO // 2 - texto.get_width() // 2, ALTO // 3))
+        pantalla.blit(texto_nick, (ANCHO // 2 - texto_nick.get_width() // 2, ALTO // 2))
+        pygame.display.flip()
+
+    return nick
+
+
+
+
+
