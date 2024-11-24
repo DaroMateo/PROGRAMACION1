@@ -9,7 +9,7 @@ ALTO = 800
 BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
 NOMBRE_FUENTE = pygame.font.SysFont("Pixeled.ttf", 20, bold=True)
-ARCHIVO_PUNTAJES = "puntajesbuscamina.json"
+ARCHIVO_PUNTAJES = "buscaminas-main/puntajebuscaminas.json"
 
 # Colores
 COLOR_BOTON = (0, 200, 0)
@@ -117,6 +117,147 @@ def modificar_matriz(matriz):
                     matriz[i][j] = contiguas
     return matriz
 
+# Puntaje
+def swap(lista: list, indice_uno: int, indice_dos: int) -> list:
+    """
+    Swapea los valores de dos índices de una lista.
+
+    Args:
+        lista (list): Lista que contiene los valores a intercambiar.
+        indice_uno (int): Índice del valor a intercambiar.
+        indice_dos (int): Índice del segundo valor a intercambiar.
+
+    Returns:
+        list: Retorna la lista con los valores intercambiados.
+    """
+    auxiliar = lista[indice_uno]
+    lista[indice_uno] = lista[indice_dos]
+    lista[indice_dos] = auxiliar
+
+    return lista  
+
+
+def ordenar(lista: list, clave: str, ascendente: bool = True) -> list: 
+    """
+    Ordena una lista de diccionarios en base a una clave de forma ascendente o descendente.
+
+    Args:
+        lista (list): Lista de diccionarios a ordenar.
+        clave (str): Clave a usar para ordenar la lista.
+        ascendente (bool, opcional): Declara si la lista se ordena de forma ascendente o descendente. 
+                                     Se le asigna False para ordenar de forma descendente. 
+                                     (Si no se pasa ningún valor booleano, ordena de forma ascendente por defecto.)
+
+    Returns:
+        list: Retorna la lista de diccionarios ordenada.
+    """
+    for i in range(len(lista) - 1):
+        for j in range(i + 1, len(lista)):
+            if ascendente and int(lista[i][clave]) > int(lista[j][clave]) or not ascendente and int(lista[i][clave]) < int(lista[j][clave]):
+                swap(lista, i, j)
+    return lista
+
+def generar_json(nombre: str, lista: list, clave: str):
+    """
+    Genera un archivo JSON con la lista proporcionada bajo la clave dada.
+
+    Args:
+        nombre (str): El nombre del archivo JSON a generar.
+        lista (list): La lista de datos a guardar en el archivo JSON.
+        clave (str): La clave bajo la cual se guardará la lista en el archivo JSON.
+    """
+    data = {clave: lista}
+    with open(nombre, 'w') as file:
+        json.dump(data, file, indent=4, ensure_ascii=False)
+
+def leer_archivo(archivo_nombre):
+    """
+    Lee el contenido de un archivo JSON. Si el archivo no existe, devuelve un diccionario vacío.
+
+    Args:
+        archivo_nombre (str): Ruta del archivo JSON.
+
+    Returns:
+        dict: Contenido del archivo JSON como un diccionario. Si no existe, retorna un diccionario vacío.
+    """
+    try:
+        with open(archivo_nombre, 'r') as archivo:
+            contenido = json.load(archivo)
+    except FileNotFoundError:
+        contenido = {}  # Devuelve un diccionario vacío si el archivo no existe
+
+    return contenido
+    
+def guardar_puntajes(nuevo_puntaje, archivo_puntajes):
+    """
+    Agrega un nuevo puntaje al archivo JSON.
+
+    Args:
+        nuevo_puntaje (dict): Diccionario con las claves "apodo" y "puntos" que representa el puntaje.
+        archivo_puntajes (str): Ruta del archivo JSON donde se guardan los puntajes.
+    """
+    datos = leer_archivo(archivo_puntajes)
+    puntajes = datos.get("puntajes", [])  # Obtiene la lista de puntajes o la inicializa vacía
+
+    puntajes.append(nuevo_puntaje)
+    puntajes = ordenar(puntajes, clave='puntos', ascendente=False)  # Ordena los puntajes
+
+    generar_json(archivo_puntajes, puntajes, "puntajes")
+
+def cargar_puntajes(archivo_puntajes):
+    """
+    Carga las puntuaciones más altas desde un archivo JSON.
+
+    Args:
+        archivo_puntajes (str): Ruta del archivo JSON que contiene los puntajes.
+
+    Returns:
+        list: Lista de diccionarios que representan las puntuaciones más altas.
+    """
+    datos = leer_archivo(archivo_puntajes)
+    puntajes = datos.get("puntajes", [])  # Obtiene los puntajes o una lista vacía
+    return puntajes
+    
+    return []
+# Función para mostrar ranking
+def mostrar_ranking(pantalla, archivo_puntajes, imagen_fondo, ancho, alto):
+    """
+    Muestra la clasificación de los 5 mejores puntajes en la pantalla.
+
+    Args:
+        pantalla (pygame.Surface): Superficie de Pygame donde se dibujará el ranking.
+        archivo_puntajes (str): Ruta al archivo JSON que contiene los puntajes.
+        imagen_fondo (pygame.Surface): Imagen de fondo para el ranking.
+        ancho (int): Ancho de la pantalla.
+        alto (int): Alto de la pantalla.
+
+    Returns:
+        str: "menu_principal" si el usuario hace clic en el botón "Atrás".
+    """
+    puntajes = cargar_puntajes(archivo_puntajes)
+    puntajes = ordenar(puntajes, clave='puntos', ascendente=False)[:5]  # Top 5 puntajes
+
+    pantalla.blit(imagen_fondo, (0, 0))
+    dibujar_texto(pantalla, "TOP 5", 48, ancho / 2, 20)
+    desplazamiento_y = 150
+    for puntaje in puntajes:
+        dibujar_texto(pantalla, f"{puntaje['apodo']}: {puntaje['puntos']}", 36, ancho / 2, desplazamiento_y)
+        desplazamiento_y += 50
+
+    dibujar_boton("Volver", 50, 50, 120, 50, (50, 50, 255), (100, 100, 255), None)
+
+    pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pos_raton = pygame.mouse.get_pos()
+                if 50 < pos_raton[0] < 170 and 50 < pos_raton[1] < 100:
+                    return "menu_principal"
+
 # Funciones de dibujo
 def dibujar_texto(surf, texto, tamano, x, y, alineacion="center"): 
     """
@@ -200,7 +341,6 @@ def alternar_sonido(silencio, sonido_fondo):
     else:
         sonido_fondo.play(-1)  # Reproducir el sonido indefinidamente
     return nuevo_silencio
-
 #Dibujar tablero
 def cargar_imagenes():
     imagenes_numeros = {
@@ -309,7 +449,6 @@ def descubrir_vacias(fila, columna, matriz, descubiertas, filas, columnas):
                 for j in range(c - 1, c + 2):  # Verifica las columnas adyacentes
                     if 0 <= i < filas and 0 <= j < columnas and not descubiertas[i][j]:
                         celdas_por_descubrir.append((i, j))
-
 
 def ajustar_tamano_casilla(filas, columnas):
     pantalla_ancho, pantalla_alto = pantalla.get_size()  # Obtener tamaño de la pantalla

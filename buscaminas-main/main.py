@@ -57,13 +57,20 @@ while ejecutando:
                 # Botón Jugar
                 elif boton_presionado("Jugar", event.pos):
                     en_menu = False  # Salir del menú y entrar al juego
+                # Botón Ver Puntajes
+                elif boton_presionado("Ver Puntajes", event.pos):
+                    resultado = mostrar_ranking(pantalla, ARCHIVO_PUNTAJES, imagen_fondo, ANCHO, ALTO)
+                    if resultado == "menu_principal":
+                        continue  # Regresar al menú después de mostrar el ranking
                 # Botón Salir
                 elif boton_presionado("Salir", event.pos):
                     pygame.quit()
                     sys.exit()
 
     # Configuración específica del juego (reiniciar solo las variables necesarias)
-    filas, columnas, num_minas = seleccionar_nivel()
+    filas = seleccionar_nivel()[0]
+    columnas = seleccionar_nivel()[1]   
+    num_minas = seleccionar_nivel()[2]
     matriz = crear_matriz_buscamina(filas, columnas, num_minas)
     descubiertas = crear_matriz(filas, columnas, False)
     banderas = crear_matriz(filas, columnas, False)
@@ -113,6 +120,5 @@ while ejecutando:
         pygame.display.flip()
 
     # Fin de juego y volver al menú
-    pygame.time.wait(5000)
-
+    pygame.time.wait(3000)
 
