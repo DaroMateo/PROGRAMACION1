@@ -1,5 +1,3 @@
-import biblioteca
-# Iniciar el juego
 from biblioteca import *
 
 sonido_fondo.play(loops=-1)
@@ -8,11 +6,10 @@ ejecutando = True
 
 # Inicialización general (antes del bucle principal)
 SONIDO_CELDA_DESCUBIERTA = pygame.mixer.Sound("buscaminas-main/coin_mario-[AudioTrimmer.com].mp3")
-SONIDO_FIN_JUEGO = pygame.mixer.Sound("buscaminas-main/game_over.mp3")
+SONIDO_FIN_JUEGO = pygame.mixer.Sound("game_over.mp3")
 evento_contador = pygame.USEREVENT + 1
 un_segundo = 1000
 pygame.time.set_timer(evento_contador, un_segundo)
-
 # Variables reutilizables
 filas = 0
 columnas = 0
@@ -57,20 +54,16 @@ while ejecutando:
                 # Botón Jugar
                 elif boton_presionado("Jugar", event.pos):
                     en_menu = False  # Salir del menú y entrar al juego
-                # Botón Ver Puntajes
                 elif boton_presionado("Ver Puntajes", event.pos):
                     resultado = mostrar_ranking(pantalla, ARCHIVO_PUNTAJES, imagen_fondo, ANCHO, ALTO)
-                    if resultado == "menu_principal":
-                        continue  # Regresar al menú después de mostrar el ranking
+
                 # Botón Salir
                 elif boton_presionado("Salir", event.pos):
                     pygame.quit()
                     sys.exit()
 
     # Configuración específica del juego (reiniciar solo las variables necesarias)
-    filas = seleccionar_nivel()[0]
-    columnas = seleccionar_nivel()[1]   
-    num_minas = seleccionar_nivel()[2]
+    filas, columnas, num_minas = seleccionar_nivel()
     matriz = crear_matriz_buscamina(filas, columnas, num_minas)
     descubiertas = crear_matriz(filas, columnas, False)
     banderas = crear_matriz(filas, columnas, False)
@@ -79,11 +72,13 @@ while ejecutando:
     tam_casilla = ajustar_tamano_casilla(filas, columnas)
     contador_segundos = 0
     contador_texto = fuente.render(f"Time: {contador_segundos}", True, "red")
-
+    # -----------------------------------------------------
+    ancho_tablero = tam_casilla * columnas
+    margen_izquierdo_x = (ANCHO - ancho_tablero) // 2
+    #------------------------------------------------------
     # Bucle principal del juego
     while not fin_juego:
         pantalla.blit(imagen_fondo, (0, 0))
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -93,32 +88,44 @@ while ejecutando:
                 x = pos[0]
                 y = pos[1]
                 columna = x // tam_casilla
-                fila = (y - 100) // tam_casilla
-
+                columna = (x - margen_izquierdo_x) // tam_casilla
+                fila = (y - 200) // tam_casilla
                 if 0 <= fila < filas and 0 <= columna < columnas:
                     if event.button == 1:  # Clic izquierdo
                         resultado = manejar_evento(fila, columna, filas, columnas, event, matriz, banderas, descubiertas, puntaje, SONIDO_FIN_JUEGO, SONIDO_CELDA_DESCUBIERTA)
                         puntaje = resultado["puntaje"]
                         fin_juego = resultado["fin_juego"]
+                        
                     elif event.button == 3:  # Clic derecho
                         banderas[fila][columna] = not banderas[fila][columna]
-
+                        if verificar_victoria(matriz, banderas):
+                            fin_juego = True
+                    
+                elif boton_reiniciar.collidepoint(event.pos):
+                    matriz, descubiertas, banderas, puntaje = reiniciar(filas, columnas, num_minas)
+                
             if event.type == evento_contador:
                 contador_segundos += 1
 
                 minutos = contador_segundos // 60
                 segundos = contador_segundos % 60
-
                 contador_texto = fuente.render(f"Time: {minutos}:{segundos:02d}", True, "red")
+            
+            
 
         # Dibujar el tablero y los indicadores
         dibujar_tablero(matriz, descubiertas, banderas, pantalla, tam_casilla)
         texto_puntaje = fuente.render(f"Puntaje: {puntaje:04d}", True, COLOR_TEXTO)
         pantalla.blit(texto_puntaje, (20, 20))
         pantalla.blit(contador_texto, (700, 20))
-
+        boton_reiniciar = dibujar_boton("Reiniciar", ANCHO / 2 - ANCHO_BOTON / 2, 20, ANCHO_BOTON, ALTO_BOTON, NEGRO, (200, 200, 200))
+        
         pygame.display.flip()
+        
+        if fin_juego:
+                nick = pedir_nick()
+                guardar_puntaje(nick, puntaje)
 
     # Fin de juego y volver al menú
-    pygame.time.wait(3000)
+    pygame.time.wait(2000)
 
